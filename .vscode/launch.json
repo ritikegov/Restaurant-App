@@ -1,0 +1,28 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "resturant",
+      "cwd": "resturant",
+      "request": "launch",
+      "type": "dart"
+    },
+    {
+      "name": "resturant (profile mode)",
+      "cwd": "resturant",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "profile"
+    },
+    {
+      "name": "resturant (release mode)",
+      "cwd": "resturant",
+      "request": "launch",
+      "type": "dart",
+      "flutterMode": "release"
+    }
+  ]
+}
