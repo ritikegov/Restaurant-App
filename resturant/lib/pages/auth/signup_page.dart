@@ -32,9 +32,9 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sign Up'),
-      ),
+      // appBar: AppBar(
+      //   title: const Text('Sign Up'),
+      // ),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           try {
