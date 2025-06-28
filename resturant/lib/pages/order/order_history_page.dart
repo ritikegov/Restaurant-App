@@ -7,6 +7,8 @@ import '../../core/utils.dart';
 import '../../bloc/auth_bloc.dart';
 import '../../bloc/order_bloc.dart';
 import '../../models/order_model.dart';
+import '../../repositories/order_repository.dart';
+import '../../repositories/menu_repository.dart';
 
 @RoutePage()
 class OrderHistoryPage extends StatefulWidget {
@@ -409,44 +411,109 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     );
   }
 
-  void _viewOrderDetails(OrderModel order) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Order #${order.id} Details'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildDetailRow('Status', order.status.toUpperCase()),
-              _buildDetailRow('Order Time',
-                  AppUtils.formatEpochToIST(order.orderTimeEpoch)),
-              _buildDetailRow('Table', 'Table ${order.tableId}'),
-              _buildDetailRow('Total Amount',
-                  AppUtils.formatPriceFromPaise(order.totalAmountInPaise)),
-              const SizedBox(height: 16),
-              const Text(
-                'Order Items:',
-                style: TextStyle(fontWeight: FontWeight.bold),
+  void _viewOrderDetails(OrderModel order) async {
+    try {
+      // Load order items from repository
+      final orderRepository = OrderRepository();
+      final orderItems =
+          await orderRepository.getOrderItemsByOrderId(order.id!);
+      final menuRepository = MenuRepository();
+
+      // Get menu item details for each order item
+      List<Map<String, dynamic>> itemDetails = [];
+      for (final item in orderItems) {
+        final menuItem = await menuRepository.getMenuItemById(item.menuItemId);
+        if (menuItem != null) {
+          itemDetails.add({
+            'name': menuItem.name,
+            'quantity': item.quantity,
+            'price': item.priceInPaise,
+            'total': item.totalPriceInPaise,
+          });
+        }
+      }
+
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Order #${order.id} Details'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildDetailRow('Order Time',
+                      AppUtils.formatEpochToIST(order.orderTimeEpoch)),
+                  _buildDetailRow('Table', 'Table ${order.tableId}'),
+                  _buildDetailRow('Total Amount',
+                      AppUtils.formatPriceFromPaise(order.totalAmountInPaise)),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Order Items:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  const SizedBox(height: 8),
+                  if (itemDetails.isNotEmpty) ...[
+                    ...itemDetails.map((item) => Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item['name'],
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    Text(
+                                      'Qty: ${item['quantity']} × ${AppUtils.formatPriceFromPaise(item['price'])}',
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                AppUtils.formatPriceFromPaise(item['total']),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )),
+                  ] else ...[
+                    const Text(
+                      'No items found',
+                      style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ],
               ),
-              const SizedBox(height: 8),
-              const Text(
-                'Loading items...',
-                style: TextStyle(fontStyle: FontStyle.italic),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Close'),
               ),
-              // TODO: Load and display order items
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
+        );
+      }
+    } catch (e) {
+      AppUtils.showToast(context, 'Error loading order details: $e',
+          isError: true);
+    }
   }
 
   Widget _buildDetailRow(String label, String value) {
