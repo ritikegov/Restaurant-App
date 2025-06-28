@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:restaurant_app/app_router.dart';
 import '../../core/constants.dart';
 import '../../core/utils.dart';
 import '../../bloc/auth_bloc.dart';
@@ -39,6 +40,22 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Order History'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home),
+            onPressed: () {
+              try {
+                context.maybePop();
+                context.router.push(HomeRoute());
+                // context.router.pushAndClearStack(const HomeRoute());
+              } catch (e) {
+                AppUtils.showToast(context, 'Navigation error: $e',
+                    isError: true);
+              }
+            },
+            tooltip: 'Home',
+          ),
+        ],
       ),
       body: BlocListener<OrderBloc, OrderState>(
         listener: (context, state) {

@@ -42,6 +42,19 @@ class _MenuPageState extends State<MenuPage> {
               }
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.home),
+            onPressed: () {
+              try {
+                context.router.replaceAll([HomeRoute()]);
+                // context.router.pushAndClearStack(const HomePageRoute());
+              } catch (e) {
+                AppUtils.showToast(context, 'Navigation error: $e',
+                    isError: true);
+              }
+            },
+            tooltip: 'Home',
+          ),
         ],
       ),
       body: RefreshIndicator(

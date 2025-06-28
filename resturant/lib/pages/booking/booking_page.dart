@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:restaurant_app/app_router.dart';
 import '../../core/constants.dart';
 import '../../core/utils.dart';
 import '../../bloc/auth_bloc.dart';
@@ -31,6 +32,21 @@ class _BookingPageState extends State<BookingPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Book a Table'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home),
+            onPressed: () {
+              try {
+                context.router.replaceAll([HomeRoute()]);
+                //  context.router.pushAndClearStack(const HomeRoute());
+              } catch (e) {
+                AppUtils.showToast(context, 'Navigation error: $e',
+                    isError: true);
+              }
+            },
+            tooltip: 'Home',
+          ),
+        ],
       ),
       body: BlocListener<BookingBloc, BookingState>(
         listener: (context, state) {

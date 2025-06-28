@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
           try {
             if (state is AuthAuthenticated) {
               AppUtils.showToast(context, AppConstants.successLoginSuccessful);
-              context.router.replaceAll([const TableViewRoute()]);
+              context.router.replaceAll([const HomeRoute()]);
             } else if (state is AuthError) {
               AppUtils.showToast(context, state.message, isError: true);
             } else if (state is AuthUnauthenticated) {

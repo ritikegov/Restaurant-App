@@ -58,6 +58,21 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Order Food'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.home),
+            onPressed: () {
+              try {
+                context.router.replaceAll([HomeRoute()]);
+                //  context.router.pushAndClearStack(const HomeRoute());
+              } catch (e) {
+                AppUtils.showToast(context, 'Navigation error: $e',
+                    isError: true);
+              }
+            },
+            tooltip: 'Home',
+          ),
+        ],
         bottom: TabBar(
           controller: _tabController,
           tabs: [
@@ -115,7 +130,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
               AppUtils.showToast(context, state.message);
               if (state.order != null) {
                 // Navigate to order history after successful order
-                context.router.replaceAll([const OrderHistoryRoute()]);
+                context.router.push(const OrderHistoryRoute());
               }
             } else if (state is OrderError) {
               AppUtils.showToast(context, state.message, isError: true);
@@ -773,5 +788,51 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
     } catch (e) {
       AppUtils.showToast(context, 'Order error: $e', isError: true);
     }
+  }
+
+  void _showOrderSuccessDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false, // Prevent dismissing by tapping outside
+      builder: (context) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.check_circle, color: Colors.green, size: 28),
+            const SizedBox(width: 8),
+            const Text('Order Placed!'),
+          ],
+        ),
+        content: const Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Your order has been placed successfully.'),
+            SizedBox(height: 8),
+            Text('You can track your order in the Order History.'),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close dialog
+              // Stay on current page, user can navigate using back button
+            },
+            child: const Text('Continue Ordering'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop(); // Close dialog
+              try {
+                context.router.push(const OrderHistoryRoute());
+              } catch (e) {
+                AppUtils.showToast(context, 'Navigation error: $e',
+                    isError: true);
+              }
+            },
+            child: const Text('View Order'),
+          ),
+        ],
+      ),
+    );
   }
 }
