@@ -23,9 +23,11 @@ class BookingRepository {
         throw Exception(AppConstants.errorTableNotAvailable);
       }
 
-      // Check 23-hour rule
-      final lastBooking = await getLastBookingByUserId(userId);
-      if (!AppUtils.canBookTable(lastBooking?.bookingTimeEpoch)) {
+      // Check 23-hour rule - only for completed/checked-in bookings
+      final lastCompletedBooking =
+          await getLastCompletedBookingByUserId(userId);
+      if (lastCompletedBooking != null &&
+          !AppUtils.canBookTable(lastCompletedBooking.bookingTimeEpoch)) {
         throw Exception(AppConstants.errorCannotBookWithin23Hours);
       }
 
@@ -102,13 +104,17 @@ class BookingRepository {
     }
   }
 
-  // Get last booking by user ID (for 23-hour rule)
-  Future<BookingModel?> getLastBookingByUserId(int userId) async {
+  // Get last completed booking by user ID (for 23-hour rule)
+  Future<BookingModel?> getLastCompletedBookingByUserId(int userId) async {
     try {
       final result = await _databaseHelper.query(
         AppConstants.bookingsTable,
-        where: 'user_id = ?',
-        whereArgs: [userId],
+        where: 'user_id = ? AND status IN (?, ?)',
+        whereArgs: [
+          userId,
+          AppConstants.bookingStatusCompleted,
+          AppConstants.bookingStatusCheckedIn
+        ],
         orderBy: 'booking_time_epoch DESC',
         limit: 1,
       );
@@ -119,7 +125,7 @@ class BookingRepository {
 
       return null;
     } catch (e) {
-      throw Exception('Failed to get last booking: $e');
+      throw Exception('Failed to get last completed booking: $e');
     }
   }
 
@@ -268,10 +274,13 @@ class BookingRepository {
         throw Exception('Booking must be checked in to complete');
       }
 
-      // Update booking status
+      // Update booking status to completed
       final result = await _databaseHelper.update(
         AppConstants.bookingsTable,
-        {'status': AppConstants.bookingStatusCompleted},
+        {
+          'status': AppConstants.bookingStatusCompleted,
+          // Keep the original booking time for 23-hour rule calculation
+        },
         where: 'id = ?',
         whereArgs: [bookingId],
       );
