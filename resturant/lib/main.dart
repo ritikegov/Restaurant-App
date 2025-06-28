@@ -1,84 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'core/router/app_router.dart';
-import 'core/database/database_helper.dart';
-import 'shared/services/shared_preferences_service.dart';
-import 'features/auth/presentation/bloc/auth_bloc.dart';
-import 'features/tables/presentation/bloc/table_bloc.dart';
-import 'features/menu/presentation/bloc/menu_bloc.dart';
-import 'features/orders/presentation/bloc/order_bloc.dart';
-import 'core/constants/app_constants.dart';
+import 'core/constants.dart';
+import 'core/database.dart';
+import 'bloc/auth_bloc.dart';
+import 'bloc/table_bloc.dart';
+import 'bloc/booking_bloc.dart';
+import 'bloc/menu_bloc.dart';
+import 'bloc/order_bloc.dart';
+import 'app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    // Initialize SharedPreferences
-    await SharedPreferencesService.init();
-
-    // Initialize Database
+    // Initialize database
     await DatabaseHelper().database;
 
     runApp(RestaurantApp());
   } catch (e) {
-    // Handle initialization errors
-    runApp(const ErrorApp());
+    // Handle initialization error
+    runApp(ErrorApp(error: e.toString()));
   }
 }
 
 class RestaurantApp extends StatelessWidget {
-  RestaurantApp({super.key});
+  final AppRouter _appRouter = AppRouter();
 
-  final _appRouter = AppRouter();
+  RestaurantApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => AuthBloc(),
-        ),
+            create: (context) => AuthBloc()..add(AuthCheckLoginStatus())),
         BlocProvider(
-          create: (context) => TableBloc(),
-        ),
-        BlocProvider(
-          create: (context) => MenuBloc(),
-        ),
-        BlocProvider(
-          create: (context) => OrderBloc(),
-        ),
+            create: (context) => TableBloc()..add(TableLoadRequested())),
+        BlocProvider(create: (context) => BookingBloc()),
+        BlocProvider(create: (context) => MenuBloc()..add(MenuLoadRequested())),
+        BlocProvider(create: (context) => OrderBloc()),
       ],
       child: MaterialApp.router(
         title: AppConstants.appName,
-        debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          primarySwatch: Colors.orange,
-          primaryColor: Colors.orange,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: Colors.orange,
-            brightness: Brightness.light,
-          ),
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
           appBarTheme: const AppBarTheme(
-            backgroundColor: Colors.orange,
+            backgroundColor: Colors.blue,
             foregroundColor: Colors.white,
-            elevation: 0,
+            elevation: 4,
           ),
           elevatedButtonTheme: ElevatedButtonThemeData(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
+              backgroundColor: Colors.blue,
               foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-            ),
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: const BorderSide(color: Colors.orange),
             ),
           ),
           cardTheme: CardTheme(
@@ -87,45 +66,75 @@ class RestaurantApp extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
-          useMaterial3: true,
+          inputDecorationTheme: InputDecorationTheme(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            filled: true,
+            fillColor: Colors.grey[100],
+          ),
         ),
         routerConfig: _appRouter.config(),
+        debugShowCheckedModeBanner: false,
       ),
     );
   }
 }
 
 class ErrorApp extends StatelessWidget {
-  const ErrorApp({super.key});
+  final String error;
+
+  const ErrorApp({super.key, required this.error});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Error',
       home: Scaffold(
+        appBar: AppBar(
+          title: const Text('Initialization Error'),
+          backgroundColor: Colors.red,
+          foregroundColor: Colors.white,
+        ),
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(
-                Icons.error_outline,
-                size: 64,
-                color: Colors.red,
-              ),
-              SizedBox(height: 16),
-              Text(
-                'Failed to initialize app',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(
+                  Icons.error_outline,
+                  size: 64,
+                  color: Colors.red,
                 ),
-              ),
-              SizedBox(height: 8),
-              Text(
-                'Please restart the application',
-                style: TextStyle(fontSize: 14),
-              ),
-            ],
+                const SizedBox(height: 16),
+                const Text(
+                  'Failed to initialize app',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  error,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Colors.grey),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    // Restart app
+                    main();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('Retry'),
+                ),
+              ],
+            ),
           ),
         ),
       ),
