@@ -188,7 +188,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  _buildStatusChip(order.status),
+                  // _buildStatusChip(order.status),
                 ],
               ),
               const SizedBox(height: 8),
@@ -288,50 +288,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
         ),
       );
     }
-  }
-
-  Widget _buildStatusChip(String status) {
-    Color color;
-    IconData icon;
-
-    switch (status) {
-      case AppConstants.orderStatusPending:
-        color = Colors.orange;
-        icon = Icons.schedule;
-        break;
-      case AppConstants.orderStatusPreparing:
-        color = Colors.blue;
-        icon = Icons.restaurant;
-        break;
-      case AppConstants.orderStatusReady:
-        color = Colors.green;
-        icon = Icons.check_circle;
-        break;
-      case AppConstants.orderStatusServed:
-        color = Colors.purple;
-        icon = Icons.room_service;
-        break;
-      case AppConstants.orderStatusCompleted:
-        color = Colors.grey;
-        icon = Icons.done_all;
-        break;
-      default:
-        color = Colors.grey;
-        icon = Icons.help_outline;
-    }
-
-    return Chip(
-      avatar: Icon(icon, size: 16, color: Colors.white),
-      label: Text(
-        status.toUpperCase(),
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      backgroundColor: color,
-    );
   }
 
   Widget _buildEmptyHistory() {
