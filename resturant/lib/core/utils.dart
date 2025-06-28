@@ -36,13 +36,13 @@ class AppUtils {
     }
   }
 
-  // Check if booking is within 23 hours
-  static bool canBookTable(int? lastBookingEpoch) {
-    if (lastBookingEpoch == null) return true;
+  // Check if booking is within 23 hours (only for completed bookings)
+  static bool canBookTable(int? lastCompletedBookingEpoch) {
+    if (lastCompletedBookingEpoch == null) return true;
 
     try {
       final now = getCurrentEpochTime();
-      final difference = now - lastBookingEpoch;
+      final difference = now - lastCompletedBookingEpoch;
       final hoursInMs = AppConstants.bookingDurationHours * 60 * 60 * 1000;
       return difference >= hoursInMs;
     } catch (e) {
