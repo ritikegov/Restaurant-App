@@ -77,7 +77,7 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildUserInfoCard(),
+              Center(child: _buildUserInfoCard()),
               const SizedBox(height: 16),
               _buildQuickActions(),
               const SizedBox(height: 16),
@@ -90,28 +90,26 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildUserInfoCard() {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            CircleAvatar(
-              radius: 40,
-              backgroundColor: Colors.blue[100],
-              child: Icon(Icons.person, size: 40, color: Colors.blue[700]),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              _username ?? 'User',
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Member since ${_getJoinDate()}',
-              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-            ),
-          ],
-        ),
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 40,
+            backgroundColor: Colors.blue[100],
+            child: Icon(Icons.person, size: 40, color: Colors.blue[700]),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            _username ?? 'User',
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Member since ${_getJoinDate()}',
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+          ),
+        ],
       ),
     );
   }
@@ -211,7 +209,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     title: Text(
                         'Last Order: ${AppUtils.formatPriceFromPaise(recentOrder.totalAmountInPaise)}'),
                     subtitle: Text(
-                        '${AppUtils.formatEpochToIST(recentOrder.orderTimeEpoch)} • ${recentOrder.status}'),
+                        '${AppUtils.formatEpochToIST(recentOrder.orderTimeEpoch)} '),
                   );
                 }
                 return const ListTile(
