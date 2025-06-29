@@ -23,13 +23,7 @@ class BookingRepository {
         throw Exception(AppConstants.errorTableNotAvailable);
       }
 
-      // Check 23-hour rule - only for completed/checked-in bookings
-      final lastCompletedBooking =
-          await getLastCompletedBookingByUserId(userId);
-      if (lastCompletedBooking != null &&
-          !AppUtils.canBookTable(lastCompletedBooking.bookingTimeEpoch)) {
-        throw Exception(AppConstants.errorCannotBookWithin23Hours);
-      }
+      // Remove 23-hour rule - users can always book after cancel/checkout
 
       final currentTime = AppUtils.getCurrentEpochTime();
       final expiryTime =
@@ -104,32 +98,7 @@ class BookingRepository {
     }
   }
 
-  // Get last completed booking by user ID (for 23-hour rule)
-  Future<BookingModel?> getLastCompletedBookingByUserId(int userId) async {
-    try {
-      final result = await _databaseHelper.query(
-        AppConstants.bookingsTable,
-        where: 'user_id = ? AND status IN (?, ?)',
-        whereArgs: [
-          userId,
-          AppConstants.bookingStatusCompleted,
-          AppConstants.bookingStatusCheckedIn
-        ],
-        orderBy: 'booking_time_epoch DESC',
-        limit: 1,
-      );
-
-      if (result.isNotEmpty) {
-        return BookingModel.fromMap(result.first);
-      }
-
-      return null;
-    } catch (e) {
-      throw Exception('Failed to get last completed booking: $e');
-    }
-  }
-
-  // Cancel booking
+// Cancel booking
   Future<bool> cancelBooking(int bookingId, int userId) async {
     try {
       final booking = await getBookingById(bookingId);
@@ -258,8 +227,8 @@ class BookingRepository {
     }
   }
 
-  // Complete booking
-  Future<bool> completeBooking(int bookingId, int userId) async {
+  // Checkout booking (replaces complete booking)
+  Future<bool> checkoutBooking(int bookingId, int userId) async {
     try {
       final booking = await getBookingById(bookingId);
       if (booking == null) {
@@ -267,20 +236,17 @@ class BookingRepository {
       }
 
       if (booking.userId != userId) {
-        throw Exception('Unauthorized to complete this booking');
+        throw Exception('Unauthorized to checkout this booking');
       }
 
       if (!booking.isCheckedIn) {
-        throw Exception('Booking must be checked in to complete');
+        throw Exception('Booking must be checked in to checkout');
       }
 
       // Update booking status to completed
       final result = await _databaseHelper.update(
         AppConstants.bookingsTable,
-        {
-          'status': AppConstants.bookingStatusCompleted,
-          // Keep the original booking time for 23-hour rule calculation
-        },
+        {'status': AppConstants.bookingStatusCompleted},
         where: 'id = ?',
         whereArgs: [bookingId],
       );
@@ -293,7 +259,7 @@ class BookingRepository {
 
       return false;
     } catch (e) {
-      throw Exception('Failed to complete booking: $e');
+      throw Exception('Failed to checkout booking: $e');
     }
   }
 

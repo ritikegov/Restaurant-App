@@ -37,11 +37,11 @@ class BookingModify extends BookingEvent {
       required this.newTableId});
 }
 
-class BookingComplete extends BookingEvent {
+class BookingCheckout extends BookingEvent {
   final int bookingId;
   final int userId;
 
-  BookingComplete({required this.bookingId, required this.userId});
+  BookingCheckout({required this.bookingId, required this.userId});
 }
 
 class BookingLoadUserBooking extends BookingEvent {
@@ -94,7 +94,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     on<BookingCancel>(_onCancelBooking);
     on<BookingCheckin>(_onCheckinBooking);
     on<BookingModify>(_onModifyBooking);
-    on<BookingComplete>(_onCompleteBooking);
+    on<BookingCheckout>(_onCheckoutBooking);
     on<BookingLoadUserBooking>(_onLoadUserBooking);
     on<BookingLoadHistory>(_onLoadHistory);
     on<BookingCheckExpired>(_onCheckExpired);
@@ -190,21 +190,21 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     }
   }
 
-  Future<void> _onCompleteBooking(
-      BookingComplete event, Emitter<BookingState> emit) async {
+  Future<void> _onCheckoutBooking(
+      BookingCheckout event, Emitter<BookingState> emit) async {
     try {
       emit(BookingLoading());
 
-      final success = await _bookingRepository.completeBooking(
+      final success = await _bookingRepository.checkoutBooking(
           event.bookingId, event.userId);
 
       if (success) {
-        emit(BookingSuccess(message: 'Booking completed successfully!'));
+        emit(BookingSuccess(message: 'Checked out successfully!'));
 
         // Load updated user booking
         add(BookingLoadUserBooking(userId: event.userId));
       } else {
-        emit(BookingError(message: 'Failed to complete booking'));
+        emit(BookingError(message: 'Failed to checkout'));
       }
     } catch (e) {
       emit(BookingError(message: e.toString()));

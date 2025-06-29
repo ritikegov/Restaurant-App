@@ -145,10 +145,10 @@ class _HomePageState extends State<HomePage> {
               Text(
                   'Booked: ${AppUtils.formatEpochToIST(booking['booking_time_epoch'] ?? 0)}'),
               const SizedBox(height: 12),
-              Row(
-                children: [
-                  if (booking['status'] ==
-                      AppConstants.bookingStatusActive) ...[
+              if (booking['status'] == AppConstants.bookingStatusActive) ...[
+                // Before check-in: Show Check In + Cancel
+                Row(
+                  children: [
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: _handleCheckin,
@@ -160,8 +160,24 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                  ] else if (booking['status'] ==
-                      AppConstants.bookingStatusCheckedIn) ...[
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: _handleCancelBooking,
+                        icon: const Icon(Icons.cancel, size: 16),
+                        label: const Text('Cancel'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.red,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ] else if (booking['status'] ==
+                  AppConstants.bookingStatusCheckedIn) ...[
+                // After check-in: Show Order Food + Checkout
+                Row(
+                  children: [
                     Expanded(
                       child: ElevatedButton.icon(
                         onPressed: () {
@@ -180,24 +196,21 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ),
-                  ],
-                  if (booking['status'] == AppConstants.bookingStatusActive ||
-                      booking['status'] ==
-                          AppConstants.bookingStatusCheckedIn) ...[
                     const SizedBox(width: 8),
                     Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: _handleCancelBooking,
-                        icon: const Icon(Icons.cancel, size: 16),
-                        label: const Text('Cancel'),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: Colors.red,
+                      child: ElevatedButton.icon(
+                        onPressed: _handleCheckoutBooking,
+                        icon: const Icon(Icons.logout, size: 16),
+                        label: const Text('Checkout'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white,
                         ),
                       ),
                     ),
                   ],
-                ],
-              ),
+                ),
+              ],
             ],
           ),
         ),
@@ -270,12 +283,16 @@ class _HomePageState extends State<HomePage> {
           subtitle: 'Reserve your table',
           icon: Icons.event_seat,
           color: Colors.green,
-          onTap: () {
+          onTap: () async {
             try {
-              context.router.push(const BookingRoute());
+              // Prevent multiple rapid taps
+              if (!mounted) return;
+              await context.router.push(const BookingRoute());
             } catch (e) {
-              AppUtils.showToast(context, 'Navigation error: $e',
-                  isError: true);
+              if (mounted) {
+                AppUtils.showToast(context, 'Navigation error: $e',
+                    isError: true);
+              }
             }
           },
         ),
@@ -284,12 +301,15 @@ class _HomePageState extends State<HomePage> {
           subtitle: 'Browse our delicious menu',
           icon: Icons.restaurant_menu,
           color: Colors.orange,
-          onTap: () {
+          onTap: () async {
             try {
-              context.router.push(const MenuRoute());
+              if (!mounted) return;
+              await context.router.push(const MenuRoute());
             } catch (e) {
-              AppUtils.showToast(context, 'Navigation error: $e',
-                  isError: true);
+              if (mounted) {
+                AppUtils.showToast(context, 'Navigation error: $e',
+                    isError: true);
+              }
             }
           },
         ),
@@ -298,12 +318,15 @@ class _HomePageState extends State<HomePage> {
           subtitle: 'View your past orders',
           icon: Icons.history,
           color: Colors.purple,
-          onTap: () {
+          onTap: () async {
             try {
-              context.router.push(const OrderHistoryRoute());
+              if (!mounted) return;
+              await context.router.push(const OrderHistoryRoute());
             } catch (e) {
-              AppUtils.showToast(context, 'Navigation error: $e',
-                  isError: true);
+              if (mounted) {
+                AppUtils.showToast(context, 'Navigation error: $e',
+                    isError: true);
+              }
             }
           },
         ),
@@ -312,12 +335,15 @@ class _HomePageState extends State<HomePage> {
           subtitle: 'Manage your account',
           icon: Icons.person,
           color: Colors.blue,
-          onTap: () {
+          onTap: () async {
             try {
-              context.router.push(const ProfileRoute());
+              if (!mounted) return;
+              await context.router.push(const ProfileRoute());
             } catch (e) {
-              AppUtils.showToast(context, 'Navigation error: $e',
-                  isError: true);
+              if (mounted) {
+                AppUtils.showToast(context, 'Navigation error: $e',
+                    isError: true);
+              }
             }
           },
         ),
@@ -407,6 +433,49 @@ class _HomePageState extends State<HomePage> {
       }
     } catch (e) {
       AppUtils.showToast(context, 'Error checking in: $e', isError: true);
+    }
+  }
+
+  void _handleCheckoutBooking() async {
+    try {
+      final authBloc = context.read<AuthBloc>();
+      final userId = await authBloc.getCurrentUserId();
+      if (userId != null) {
+        final bookingState = context.read<BookingBloc>().state;
+        if (bookingState is BookingLoaded && bookingState.userBooking != null) {
+          final confirmed = await showDialog<bool>(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Checkout'),
+              content: const Text(
+                  'Are you sure you want to checkout? You will be able to book again immediately.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text('No'),
+                ),
+                ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                  child: const Text('Yes, Checkout',
+                      style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            ),
+          );
+
+          if (confirmed == true) {
+            context.read<BookingBloc>().add(
+                  BookingCheckout(
+                    bookingId: bookingState.userBooking!['id'],
+                    userId: userId,
+                  ),
+                );
+          }
+        }
+      }
+    } catch (e) {
+      AppUtils.showToast(context, 'Error checking out: $e', isError: true);
     }
   }
 
