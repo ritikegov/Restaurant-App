@@ -19,7 +19,6 @@ class AppRouter extends _$AppRouter {
 
   @override
   List<AutoRoute> get routes => [
-        // Auth Routes
         AutoRoute(
           page: LoginRoute.page,
           path: '/login',
@@ -29,8 +28,6 @@ class AppRouter extends _$AppRouter {
           page: SignupRoute.page,
           path: '/signup',
         ),
-
-        // Main App Routes
         AutoRoute(
           page: HomeRoute.page,
           path: '/home',

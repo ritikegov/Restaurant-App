@@ -73,7 +73,6 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Current booking status
               BlocBuilder<BookingBloc, BookingState>(
                 builder: (context, bookingState) {
                   if (bookingState is BookingLoaded &&
@@ -83,14 +82,9 @@ class _HomePageState extends State<HomePage> {
                   return const SizedBox.shrink();
                 },
               ),
-
-              // Welcome message
               const SizedBox(height: 16),
               _buildWelcomeSection(),
-
               const SizedBox(height: 24),
-
-              // Main navigation cards
               _buildNavigationCards(),
             ],
           ),
@@ -146,7 +140,6 @@ class _HomePageState extends State<HomePage> {
                   'Booked: ${AppUtils.formatEpochToIST(booking['booking_time_epoch'] ?? 0)}'),
               const SizedBox(height: 12),
               if (booking['status'] == AppConstants.bookingStatusActive) ...[
-                // Before check-in: Show Check In + Cancel
                 Row(
                   children: [
                     Expanded(
@@ -175,7 +168,6 @@ class _HomePageState extends State<HomePage> {
                 ),
               ] else if (booking['status'] ==
                   AppConstants.bookingStatusCheckedIn) ...[
-                // After check-in: Show Order Food + Checkout
                 Row(
                   children: [
                     Expanded(
@@ -285,7 +277,6 @@ class _HomePageState extends State<HomePage> {
           color: Colors.green,
           onTap: () async {
             try {
-              // Prevent multiple rapid taps
               if (!mounted) return;
               await context.router.push(const BookingRoute());
             } catch (e) {

@@ -23,7 +23,6 @@ class _BookingPageState extends State<BookingPage> {
   @override
   void initState() {
     super.initState();
-    // Refresh tables when page loads
     context.read<TableBloc>().add(TableRefreshRequested());
   }
 
@@ -38,7 +37,6 @@ class _BookingPageState extends State<BookingPage> {
             onPressed: () {
               try {
                 context.router.replaceAll([HomeRoute()]);
-                //  context.router.pushAndClearStack(const HomeRoute());
               } catch (e) {
                 AppUtils.showToast(context, 'Navigation error: $e',
                     isError: true);
@@ -53,7 +51,7 @@ class _BookingPageState extends State<BookingPage> {
           try {
             if (state is BookingSuccess) {
               AppUtils.showToast(context, state.message);
-              context.router.pop(); // Go back to table view
+              context.router.pop();
             } else if (state is BookingError) {
               AppUtils.showToast(context, state.message, isError: true);
             }
@@ -64,7 +62,6 @@ class _BookingPageState extends State<BookingPage> {
         child: SafeArea(
           child: Column(
             children: [
-              // Booking instructions
               Container(
                 width: double.infinity,
                 margin: const EdgeInsets.all(16),
@@ -102,8 +99,6 @@ class _BookingPageState extends State<BookingPage> {
                   ],
                 ),
               ),
-
-              // Available tables
               Expanded(
                 child: BlocBuilder<TableBloc, TableState>(
                   builder: (context, state) {
@@ -127,8 +122,6 @@ class _BookingPageState extends State<BookingPage> {
                   },
                 ),
               ),
-
-              // Book button
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(16),
@@ -374,7 +367,6 @@ class _BookingPageState extends State<BookingPage> {
         return;
       }
 
-      // Show confirmation dialog
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(

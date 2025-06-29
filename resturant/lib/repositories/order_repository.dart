@@ -6,7 +6,6 @@ import '../models/order_model.dart';
 class OrderRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
 
-  // Create order with items
   Future<OrderModel?> createOrder({
     required int userId,
     required int tableId,
@@ -17,13 +16,11 @@ class OrderRepository {
         throw Exception('Order must contain at least one item');
       }
 
-      // Calculate total amount
       int totalAmountInPaise = 0;
       for (final item in orderItems) {
         totalAmountInPaise += item.totalPriceInPaise;
       }
 
-      // Create order
       final order = OrderModel(
         userId: userId,
         tableId: tableId,
@@ -32,13 +29,11 @@ class OrderRepository {
         status: AppConstants.orderStatusPending,
       );
 
-      // Insert order
       final orderId = await _databaseHelper.insert(
         AppConstants.ordersTable,
         order.toMap(),
       );
 
-      // Insert order items
       for (final item in orderItems) {
         final orderItemWithOrderId = item.copyWith(orderId: orderId);
         await _databaseHelper.insert(
@@ -53,7 +48,6 @@ class OrderRepository {
     }
   }
 
-  // Get order by ID
   Future<OrderModel?> getOrderById(int id) async {
     try {
       final result = await _databaseHelper.query(
@@ -73,7 +67,6 @@ class OrderRepository {
     }
   }
 
-  // Get orders by user ID
   Future<List<OrderModel>> getOrdersByUserId(int userId) async {
     try {
       final result = await _databaseHelper.query(
@@ -89,7 +82,6 @@ class OrderRepository {
     }
   }
 
-  // Get order items by order ID
   Future<List<OrderItemModel>> getOrderItemsByOrderId(int orderId) async {
     try {
       final result = await _databaseHelper.query(
@@ -105,7 +97,6 @@ class OrderRepository {
     }
   }
 
-  // Get order with items and details
   Future<Map<String, dynamic>?> getOrderWithDetails(int orderId) async {
     try {
       final result = await _databaseHelper.rawQuery('''
@@ -118,8 +109,6 @@ class OrderRepository {
 
       if (result.isNotEmpty) {
         final orderData = Map<String, dynamic>.from(result.first);
-
-        // Get order items with menu item details
         final itemsResult = await _databaseHelper.rawQuery('''
           SELECT oi.*, mi.name as item_name, mi.description as item_description
           FROM ${AppConstants.orderItemsTable} oi
@@ -138,7 +127,6 @@ class OrderRepository {
     }
   }
 
-  // Update order status
   Future<bool> updateOrderStatus(int orderId, String status) async {
     try {
       final result = await _databaseHelper.update(
@@ -154,7 +142,6 @@ class OrderRepository {
     }
   }
 
-  // Cancel order (only if pending)
   Future<bool> cancelOrder(int orderId, int userId) async {
     try {
       final order = await getOrderById(orderId);
@@ -170,14 +157,12 @@ class OrderRepository {
         throw Exception('Only pending orders can be cancelled');
       }
 
-      // Delete order items first (foreign key constraint)
       await _databaseHelper.delete(
         AppConstants.orderItemsTable,
         where: 'order_id = ?',
         whereArgs: [orderId],
       );
 
-      // Delete order
       final result = await _databaseHelper.delete(
         AppConstants.ordersTable,
         where: 'id = ? AND user_id = ?',
@@ -190,7 +175,6 @@ class OrderRepository {
     }
   }
 
-  // Get current order for user at table
   Future<OrderModel?> getCurrentOrderForUser(int userId) async {
     try {
       final result = await _databaseHelper.query(
@@ -216,7 +200,6 @@ class OrderRepository {
     }
   }
 
-  // Get order statistics for user
   Future<Map<String, dynamic>> getOrderStatistics(int userId) async {
     try {
       final result = await _databaseHelper.rawQuery('''
@@ -251,7 +234,6 @@ class OrderRepository {
     }
   }
 
-  // Get orders by status
   Future<List<OrderModel>> getOrdersByStatus(String status) async {
     try {
       final result = await _databaseHelper.query(
@@ -267,7 +249,6 @@ class OrderRepository {
     }
   }
 
-  // Get recent orders for user
   Future<List<OrderModel>> getRecentOrders(int userId, {int limit = 10}) async {
     try {
       final result = await _databaseHelper.query(
@@ -284,7 +265,6 @@ class OrderRepository {
     }
   }
 
-  // Check if user can place order (must have checked-in booking)
   Future<bool> canUserPlaceOrder(int userId) async {
     try {
       final result = await _databaseHelper.query(
@@ -300,7 +280,6 @@ class OrderRepository {
     }
   }
 
-  // Get all orders (for admin purposes)
   Future<List<OrderModel>> getAllOrders() async {
     try {
       final result = await _databaseHelper.query(

@@ -49,7 +49,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
               try {
                 context.maybePop();
                 context.router.push(HomeRoute());
-                // context.router.pushAndClearStack(const HomeRoute());
               } catch (e) {
                 AppUtils.showToast(context, 'Navigation error: $e',
                     isError: true);
@@ -64,7 +63,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
           try {
             if (state is OrderSuccess) {
               AppUtils.showToast(context, state.message);
-              _loadOrderHistory(); // Reload after action
+              _loadOrderHistory();
             } else if (state is OrderError) {
               AppUtils.showToast(context, state.message, isError: true);
             }
@@ -95,7 +94,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   Widget _buildOrderHistory(OrderHistoryLoaded state) {
     return Column(
       children: [
-        // Order history section
         Expanded(
           child: state.orders.isEmpty
               ? _buildEmptyHistory()
@@ -145,7 +143,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Order header
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -156,12 +153,9 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  // _buildStatusChip(order.status),
                 ],
               ),
               const SizedBox(height: 8),
-
-              // Order details
               Row(
                 children: [
                   Icon(Icons.access_time, size: 16, color: Colors.grey[600]),
@@ -185,8 +179,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                 ],
               ),
               const SizedBox(height: 12),
-
-              // Amount
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -207,8 +199,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                   ),
                 ],
               ),
-
-              // Action buttons
               if (order.isPending && isCurrent) ...[
                 const SizedBox(height: 12),
                 Row(
@@ -283,7 +273,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
           const SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: () {
-              Navigator.of(context).pop(); // Go back to order food
+              Navigator.of(context).pop();
             },
             icon: const Icon(Icons.restaurant_menu),
             label: const Text('Order Now'),
@@ -379,13 +369,11 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
 
   void _viewOrderDetails(OrderModel order) async {
     try {
-      // Load order items from repository
       final orderRepository = OrderRepository();
       final orderItems =
           await orderRepository.getOrderItemsByOrderId(order.id!);
       final menuRepository = MenuRepository();
 
-      // Get menu item details for each order item
       List<Map<String, dynamic>> itemDetails = [];
       for (final item in orderItems) {
         final menuItem = await menuRepository.getMenuItemById(item.menuItemId);

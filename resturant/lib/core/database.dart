@@ -36,7 +36,6 @@ class DatabaseHelper {
 
   Future<void> _onCreate(Database db, int version) async {
     try {
-      // Create Users table
       await db.execute('''
         CREATE TABLE ${AppConstants.usersTable} (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,7 +45,6 @@ class DatabaseHelper {
         )
       ''');
 
-      // Create Tables table
       await db.execute('''
         CREATE TABLE ${AppConstants.tablesTable} (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -56,7 +54,6 @@ class DatabaseHelper {
         )
       ''');
 
-      // Create Bookings table
       await db.execute('''
         CREATE TABLE ${AppConstants.bookingsTable} (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -71,7 +68,6 @@ class DatabaseHelper {
         )
       ''');
 
-      // Create Menu Items table
       await db.execute('''
         CREATE TABLE ${AppConstants.menuItemsTable} (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -82,7 +78,6 @@ class DatabaseHelper {
         )
       ''');
 
-      // Create Orders table
       await db.execute('''
         CREATE TABLE ${AppConstants.ordersTable} (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -96,7 +91,6 @@ class DatabaseHelper {
         )
       ''');
 
-      // Create Order Items table
       await db.execute('''
         CREATE TABLE ${AppConstants.orderItemsTable} (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -109,7 +103,6 @@ class DatabaseHelper {
         )
       ''');
 
-      // Insert initial data
       await _insertInitialData(db);
     } catch (e) {
       throw Exception('Failed to create database tables: $e');
@@ -129,7 +122,6 @@ class DatabaseHelper {
 
   Future<void> _insertInitialData(Database db) async {
     try {
-      // Insert Tables
       for (int i = 0; i < AppConstants.totalTables; i++) {
         await db.insert(AppConstants.tablesTable, {
           'name': AppConstants.tableNames[i],
@@ -138,7 +130,6 @@ class DatabaseHelper {
         });
       }
 
-      // Insert Menu Items
       for (final item in AppConstants.sampleMenuItems) {
         await db.insert(AppConstants.menuItemsTable, item);
       }
@@ -147,7 +138,6 @@ class DatabaseHelper {
     }
   }
 
-  // Generic database operations
   Future<int> insert(String table, Map<String, dynamic> values) async {
     try {
       final db = await database;
@@ -262,22 +252,17 @@ class DatabaseHelper {
     }
   }
 
-  // Helper method to reset database (for testing/development)
   Future<void> resetDatabase() async {
     try {
       final databasesPath = await getDatabasesPath();
       final path = join(databasesPath, AppConstants.databaseName);
 
-      // Close current database connection
       if (_database != null) {
         await _database!.close();
         _database = null;
       }
-
-      // Delete database file
       await deleteDatabase(path);
 
-      // Reinitialize database
       _database = await _initDatabase();
     } catch (e) {
       throw Exception('Failed to reset database: $e');

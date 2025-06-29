@@ -6,26 +6,21 @@ import '../models/user_model.dart';
 class UserRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
 
-  // Create user
   Future<UserModel?> createUser(String username, String password) async {
     try {
-      // Check if user already exists
       final existingUser = await getUserByUsername(username);
       if (existingUser != null) {
         throw Exception(AppConstants.errorUserExists);
       }
 
-      // Hash password
       final hashedPassword = AppUtils.hashPassword(password);
 
-      // Create user model
       final user = UserModel(
         username: username.trim(),
         password: hashedPassword,
         createdAtEpoch: AppUtils.getCurrentEpochTime(),
       );
 
-      // Insert into database
       final id = await _databaseHelper.insert(
         AppConstants.usersTable,
         user.toMap(),
@@ -37,7 +32,6 @@ class UserRepository {
     }
   }
 
-  // Get user by username
   Future<UserModel?> getUserByUsername(String username) async {
     try {
       final result = await _databaseHelper.query(
@@ -57,7 +51,6 @@ class UserRepository {
     }
   }
 
-  // Get user by ID
   Future<UserModel?> getUserById(int id) async {
     try {
       final result = await _databaseHelper.query(
@@ -77,7 +70,6 @@ class UserRepository {
     }
   }
 
-  // Authenticate user
   Future<UserModel?> authenticateUser(String username, String password) async {
     try {
       final hashedPassword = AppUtils.hashPassword(password);
@@ -99,7 +91,6 @@ class UserRepository {
     }
   }
 
-  // Update user
   Future<bool> updateUser(UserModel user) async {
     try {
       if (user.id == null) {
@@ -119,7 +110,6 @@ class UserRepository {
     }
   }
 
-  // Delete user
   Future<bool> deleteUser(int id) async {
     try {
       final result = await _databaseHelper.delete(
@@ -134,7 +124,6 @@ class UserRepository {
     }
   }
 
-  // Get all users
   Future<List<UserModel>> getAllUsers() async {
     try {
       final result = await _databaseHelper.query(
@@ -148,7 +137,6 @@ class UserRepository {
     }
   }
 
-  // Check if username exists
   Future<bool> usernameExists(String username) async {
     try {
       final user = await getUserByUsername(username);
@@ -158,7 +146,6 @@ class UserRepository {
     }
   }
 
-  // Update password
   Future<bool> updatePassword(int userId, String newPassword) async {
     try {
       final hashedPassword = AppUtils.hashPassword(newPassword);

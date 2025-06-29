@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/menu_item_model.dart';
 import '../repositories/menu_repository.dart';
 
-// Events
 abstract class MenuEvent {}
 
 class MenuLoadRequested extends MenuEvent {}
@@ -15,7 +14,6 @@ class MenuFilterByCategory extends MenuEvent {
   MenuFilterByCategory({this.category});
 }
 
-// States
 abstract class MenuState {}
 
 class MenuInitial extends MenuState {}
@@ -40,7 +38,6 @@ class MenuError extends MenuState {
   MenuError({required this.message});
 }
 
-// BLoC
 class MenuBloc extends Bloc<MenuEvent, MenuState> {
   final MenuRepository _menuRepository = MenuRepository();
   List<MenuItemModel> _allMenuItems = [];
@@ -107,7 +104,6 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
     }
   }
 
-  // Helper methods
   List<MenuItemModel> getCurrentMenuItems() {
     final currentState = state;
     if (currentState is MenuLoaded) {

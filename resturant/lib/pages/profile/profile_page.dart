@@ -40,7 +40,6 @@ class _ProfilePageState extends State<ProfilePage> {
         });
       }
 
-      // Load user's order history only
       if (userId != null) {
         context.read<OrderBloc>().add(OrderLoadHistory(userId: userId));
       }
@@ -229,7 +228,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   String _getJoinDate() {
-    return 'Today'; // Replace with actual data if needed
+    return 'Today';
   }
 
   void _handleLogout() async {

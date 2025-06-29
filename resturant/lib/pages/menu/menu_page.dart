@@ -21,7 +21,6 @@ class _MenuPageState extends State<MenuPage> {
   @override
   void initState() {
     super.initState();
-    // Refresh menu when page loads
     context.read<MenuBloc>().add(MenuRefreshRequested());
   }
 
@@ -47,7 +46,6 @@ class _MenuPageState extends State<MenuPage> {
             onPressed: () {
               try {
                 context.router.replaceAll([HomeRoute()]);
-                // context.router.pushAndClearStack(const HomePageRoute());
               } catch (e) {
                 AppUtils.showToast(context, 'Navigation error: $e',
                     isError: true);
@@ -79,10 +77,7 @@ class _MenuPageState extends State<MenuPage> {
   Widget _buildMenuContent(MenuLoaded state) {
     return Column(
       children: [
-        // Category filter
         if (state.categories.isNotEmpty) _buildCategoryFilter(state.categories),
-
-        // Menu items
         Expanded(
           child: state.menuItems.isEmpty
               ? _buildEmptyMenu()
@@ -99,10 +94,9 @@ class _MenuPageState extends State<MenuPage> {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: categories.length + 1, // +1 for "All" option
+        itemCount: categories.length + 1,
         itemBuilder: (context, index) {
           if (index == 0) {
-            // "All" option
             final isSelected = _selectedCategory == null;
             return Padding(
               padding: const EdgeInsets.only(right: 8),
@@ -149,18 +143,15 @@ class _MenuPageState extends State<MenuPage> {
   }
 
   Widget _buildMenuList(List<MenuItemModel> menuItems) {
-    // Group items by category
     final groupedItems = <String, List<MenuItemModel>>{};
     for (final item in menuItems) {
       groupedItems.putIfAbsent(item.category, () => []).add(item);
     }
 
     if (_selectedCategory != null) {
-      // Show only selected category
       final categoryItems = groupedItems[_selectedCategory] ?? [];
       return _buildCategorySection(_selectedCategory!, categoryItems);
     } else {
-      // Show all categories
       return ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: groupedItems.length,
@@ -212,7 +203,6 @@ class _MenuPageState extends State<MenuPage> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Item icon
               Container(
                 width: 60,
                 height: 60,
@@ -228,8 +218,6 @@ class _MenuPageState extends State<MenuPage> {
                 ),
               ),
               const SizedBox(width: 16),
-
-              // Item details
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

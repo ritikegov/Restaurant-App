@@ -27,11 +27,9 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
 
-    // Load cart and menu
     context.read<OrderBloc>().add(OrderLoadCart());
     context.read<MenuBloc>().add(MenuRefreshRequested());
 
-    // Load current order for user
     _loadCurrentOrder();
   }
 
@@ -64,7 +62,6 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
             onPressed: () {
               try {
                 context.router.replaceAll([HomeRoute()]);
-                //  context.router.pushAndClearStack(const HomeRoute());
               } catch (e) {
                 AppUtils.showToast(context, 'Navigation error: $e',
                     isError: true);
@@ -129,7 +126,6 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
             if (state is OrderSuccess) {
               AppUtils.showToast(context, state.message);
               if (state.order != null) {
-                // Navigate to order history after successful order
                 context.router.push(const OrderHistoryRoute());
               }
             } else if (state is OrderError) {
@@ -169,10 +165,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
   Widget _buildMenuContent(MenuLoaded state) {
     return Column(
       children: [
-        // Category filter
         if (state.categories.isNotEmpty) _buildCategoryFilter(state.categories),
-
-        // Menu items
         Expanded(
           child: state.menuItems.isEmpty
               ? _buildEmptyMenu()
@@ -261,7 +254,6 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Item icon
                 Container(
                   width: 60,
                   height: 60,
@@ -277,8 +269,6 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                   ),
                 ),
                 const SizedBox(width: 16),
-
-                // Item details
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -314,8 +304,6 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                     ],
                   ),
                 ),
-
-                // Add/Remove buttons
                 Column(
                   children: [
                     if (quantityInCart > 0) ...[
@@ -408,7 +396,6 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
 
     return Column(
       children: [
-        // Cart items
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(16),
@@ -419,8 +406,6 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
             },
           ),
         ),
-
-        // Cart summary and place order
         _buildCartSummary(state),
       ],
     );
@@ -433,7 +418,6 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            // Item details
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -466,8 +450,6 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                 ],
               ),
             ),
-
-            // Quantity controls
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -604,7 +586,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: () {
-              _tabController.animateTo(0); // Switch to menu tab
+              _tabController.animateTo(0);
             },
             child: const Text('Browse Menu'),
           ),
@@ -724,19 +706,16 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
         return;
       }
 
-      // Get user's active booking to get table ID
       final bookingState = context.read<BookingBloc>().state;
       if (bookingState is BookingLoaded && bookingState.userBooking != null) {
         final booking = bookingState.userBooking!;
 
-        // Check if user is checked in
         if (booking['status'] != AppConstants.bookingStatusCheckedIn) {
           AppUtils.showToast(context, AppConstants.errorCheckinRequired,
               isError: true);
           return;
         }
 
-        // Show confirmation dialog
         final confirmed = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
@@ -793,7 +772,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
   void _showOrderSuccessDialog() {
     showDialog(
       context: context,
-      barrierDismissible: false, // Prevent dismissing by tapping outside
+      barrierDismissible: false,
       builder: (context) => AlertDialog(
         title: Row(
           children: [
@@ -814,14 +793,13 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop(); // Close dialog
-              // Stay on current page, user can navigate using back button
+              Navigator.of(context).pop();
             },
             child: const Text('Continue Ordering'),
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.of(context).pop(); // Close dialog
+              Navigator.of(context).pop();
               try {
                 context.router.push(const OrderHistoryRoute());
               } catch (e) {

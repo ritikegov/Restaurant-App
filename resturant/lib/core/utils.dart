@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'constants.dart';
 
 class AppUtils {
-  // Convert epoch timestamp to formatted Indian time
   static String formatEpochToIST(int epochTime) {
     try {
       final dateTime = DateTime.fromMillisecondsSinceEpoch(epochTime);
@@ -12,12 +11,10 @@ class AppUtils {
     }
   }
 
-  // Get current epoch time
   static int getCurrentEpochTime() {
     return DateTime.now().millisecondsSinceEpoch;
   }
 
-  // Convert paise to rupees string
   static String formatPriceFromPaise(int priceInPaise) {
     try {
       final rupees = priceInPaise / 100;
@@ -27,7 +24,6 @@ class AppUtils {
     }
   }
 
-  // Convert rupees to paise
   static int convertRupeesToPaise(double rupees) {
     try {
       return (rupees * 100).round();
@@ -36,7 +32,6 @@ class AppUtils {
     }
   }
 
-  // Check if booking is within 23 hours (only for completed bookings)
   static bool canBookTable(int? lastCompletedBookingEpoch) {
     if (lastCompletedBookingEpoch == null) return true;
 
@@ -50,7 +45,6 @@ class AppUtils {
     }
   }
 
-  // Check if booking has expired for check-in
   static bool hasBookingExpired(int bookingEpoch) {
     try {
       final now = getCurrentEpochTime();
@@ -62,7 +56,6 @@ class AppUtils {
     }
   }
 
-  // Check if it's a no-show
   static bool isNoShow(int bookingEpoch) {
     try {
       final now = getCurrentEpochTime();
@@ -74,7 +67,6 @@ class AppUtils {
     }
   }
 
-  // Show toast message
   static void showToast(BuildContext context, String message,
       {bool isError = false}) {
     try {
@@ -90,7 +82,6 @@ class AppUtils {
     }
   }
 
-  // Validate username
   static String? validateUsername(String? username) {
     if (username == null || username.trim().isEmpty) {
       return AppConstants.errorUsernameRequired;
@@ -105,7 +96,6 @@ class AppUtils {
     return null;
   }
 
-  // Validate password
   static String? validatePassword(String? password) {
     if (password == null || password.isEmpty) {
       return AppConstants.errorPasswordRequired;
@@ -118,7 +108,6 @@ class AppUtils {
     return null;
   }
 
-  // Simple password hashing (for production, use proper hashing)
   static String hashPassword(String password) {
     try {
       return password.split('').map((char) => char.codeUnitAt(0)).join('');
@@ -127,7 +116,6 @@ class AppUtils {
     }
   }
 
-  // Get time difference in hours
   static double getHoursDifference(int fromEpoch, int toEpoch) {
     try {
       final difference = toEpoch - fromEpoch;
@@ -137,7 +125,6 @@ class AppUtils {
     }
   }
 
-  // Get formatted time for booking
   static String getBookingTimeText(int epochTime) {
     try {
       final dateTime = DateTime.fromMillisecondsSinceEpoch(epochTime);
@@ -155,7 +142,6 @@ class AppUtils {
     }
   }
 
-  // Generate unique order ID
   static String generateOrderId() {
     try {
       return 'ORD${getCurrentEpochTime()}';
@@ -164,12 +150,10 @@ class AppUtils {
     }
   }
 
-  // Check if string is null or empty
   static bool isNullOrEmpty(String? value) {
     return value == null || value.trim().isEmpty;
   }
 
-  // Safe integer parsing
   static int safeParseInt(dynamic value, {int defaultValue = 0}) {
     try {
       if (value == null) return defaultValue;
@@ -181,7 +165,6 @@ class AppUtils {
     }
   }
 
-  // Safe double parsing
   static double safeParseDouble(dynamic value, {double defaultValue = 0.0}) {
     try {
       if (value == null) return defaultValue;

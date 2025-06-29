@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/table_model.dart';
 import '../repositories/table_repository.dart';
 
-// Events
 abstract class TableEvent {}
 
 class TableLoadRequested extends TableEvent {}
@@ -17,7 +16,6 @@ class TableUpdateAvailability extends TableEvent {
       {required this.tableId, required this.availableSeats});
 }
 
-// States
 abstract class TableState {}
 
 class TableInitial extends TableState {}
@@ -36,7 +34,6 @@ class TableError extends TableState {
   TableError({required this.message});
 }
 
-// BLoC
 class TableBloc extends Bloc<TableEvent, TableState> {
   final TableRepository _tableRepository = TableRepository();
 
@@ -73,7 +70,6 @@ class TableBloc extends Bloc<TableEvent, TableState> {
       await _tableRepository.updateTableAvailability(
           event.tableId, event.availableSeats);
 
-      // Refresh tables after update
       final tables = await _tableRepository.getAllTables();
       emit(TableLoaded(tables: tables));
     } catch (e) {
@@ -82,7 +78,6 @@ class TableBloc extends Bloc<TableEvent, TableState> {
     }
   }
 
-  // Helper method to get current tables
   List<TableModel> getCurrentTables() {
     final currentState = state;
     if (currentState is TableLoaded) {
@@ -91,7 +86,6 @@ class TableBloc extends Bloc<TableEvent, TableState> {
     return [];
   }
 
-  // Helper method to get table by ID
   TableModel? getTableById(int id) {
     try {
       final tables = getCurrentTables();

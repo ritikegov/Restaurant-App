@@ -30,10 +30,6 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Login'),
-      //   automaticallyImplyLeading: false,
-      // ),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           try {
@@ -42,9 +38,7 @@ class _LoginPageState extends State<LoginPage> {
               context.router.replaceAll([const HomeRoute()]);
             } else if (state is AuthError) {
               AppUtils.showToast(context, state.message, isError: true);
-            } else if (state is AuthUnauthenticated) {
-              // Stay on login page
-            }
+            } else if (state is AuthUnauthenticated) {}
           } catch (e) {
             AppUtils.showToast(context, 'Navigation error: $e', isError: true);
           }
@@ -58,7 +52,6 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // App Logo/Title
                   const Icon(
                     Icons.restaurant,
                     size: 80,
@@ -75,8 +68,6 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   const SizedBox(height: 32),
-
-                  // Username Field
                   TextFormField(
                     controller: _usernameController,
                     decoration: const InputDecoration(
@@ -87,8 +78,6 @@ class _LoginPageState extends State<LoginPage> {
                     textInputAction: TextInputAction.next,
                   ),
                   const SizedBox(height: 16),
-
-                  // Password Field
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
@@ -113,8 +102,6 @@ class _LoginPageState extends State<LoginPage> {
                     onFieldSubmitted: (_) => _handleLogin(),
                   ),
                   const SizedBox(height: 24),
-
-                  // Login Button
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
                       final isLoading = state is AuthLoading;
@@ -139,8 +126,6 @@ class _LoginPageState extends State<LoginPage> {
                     },
                   ),
                   const SizedBox(height: 16),
-
-                  // Signup Link
                   TextButton(
                     onPressed: () {
                       try {

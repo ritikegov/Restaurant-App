@@ -3,7 +3,6 @@ import '../models/order_model.dart';
 import '../models/menu_item_model.dart';
 import '../repositories/order_repository.dart';
 
-// Events
 abstract class OrderEvent {}
 
 class OrderLoadCart extends OrderEvent {}
@@ -63,7 +62,6 @@ class OrderUpdateStatus extends OrderEvent {
   OrderUpdateStatus({required this.orderId, required this.status});
 }
 
-// Cart Item Model
 class CartItem {
   final MenuItemModel menuItem;
   final int quantity;
@@ -81,7 +79,6 @@ class CartItem {
   double get totalPriceInRupees => totalPriceInPaise / 100.0;
 }
 
-// States
 abstract class OrderState {}
 
 class OrderInitial extends OrderState {}
@@ -118,7 +115,6 @@ class OrderError extends OrderState {
   OrderError({required this.message});
 }
 
-// BLoC
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
   final OrderRepository _orderRepository = OrderRepository();
   final List<CartItem> _cartItems = [];
@@ -156,13 +152,11 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       );
 
       if (existingItemIndex >= 0) {
-        // Update existing item quantity
         final existingItem = _cartItems[existingItemIndex];
         final newQuantity = existingItem.quantity + event.quantity;
         _cartItems[existingItemIndex] =
             existingItem.copyWith(quantity: newQuantity);
       } else {
-        // Add new item
         _cartItems.add(CartItem(
           menuItem: event.menuItem,
           quantity: event.quantity,
@@ -243,24 +237,21 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         return;
       }
 
-      // Check if user can place order
       final canOrder = await _orderRepository.canUserPlaceOrder(event.userId);
       if (!canOrder) {
         emit(OrderError(message: 'You must check-in to place an order'));
         return;
       }
 
-      // Convert cart items to order items
       final orderItems = _cartItems.map((cartItem) {
         return OrderItemModel(
-          orderId: 0, // Will be set when order is created
+          orderId: 0,
           menuItemId: cartItem.menuItem.id!,
           quantity: cartItem.quantity,
           priceInPaise: cartItem.menuItem.priceInPaise,
         );
       }).toList();
 
-      // Create order
       final order = await _orderRepository.createOrder(
         userId: event.userId,
         tableId: event.tableId,
@@ -268,7 +259,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       );
 
       if (order != null) {
-        _cartItems.clear(); // Clear cart after successful order
+        _cartItems.clear();
         emit(OrderSuccess(
           message: 'Order placed successfully!',
           order: order,
@@ -329,7 +320,6 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       if (success) {
         emit(OrderSuccess(message: 'Order cancelled successfully'));
 
-        // Reload history
         add(OrderLoadHistory(userId: event.userId));
       } else {
         emit(OrderError(message: 'Failed to cancel order'));
@@ -355,7 +345,6 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     }
   }
 
-  // Helper methods
   int _calculateTotalAmount() {
     try {
       return _cartItems.fold(0, (sum, item) => sum + item.totalPriceInPaise);

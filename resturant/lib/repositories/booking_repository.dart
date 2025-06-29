@@ -8,28 +8,21 @@ class BookingRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
   final TableRepository _tableRepository = TableRepository();
 
-  // Create booking
   Future<BookingModel?> createBooking(int userId, int tableId) async {
     try {
-      // Check if user already has an active booking
       final existingBooking = await getActiveBookingByUserId(userId);
       if (existingBooking != null) {
         throw Exception(AppConstants.errorUserAlreadyHasBooking);
       }
-
-      // Check if table has available seats
       final hasSeats = await _tableRepository.hasAvailableSeats(tableId);
       if (!hasSeats) {
         throw Exception(AppConstants.errorTableNotAvailable);
       }
 
-      // Remove 23-hour rule - users can always book after cancel/checkout
-
       final currentTime = AppUtils.getCurrentEpochTime();
       final expiryTime =
           currentTime + (AppConstants.checkinTimeoutMinutes * 60 * 1000);
 
-      // Create booking
       final booking = BookingModel(
         userId: userId,
         tableId: tableId,
@@ -38,13 +31,11 @@ class BookingRepository {
         expiresAtEpoch: expiryTime,
       );
 
-      // Insert booking
       final id = await _databaseHelper.insert(
         AppConstants.bookingsTable,
         booking.toMap(),
       );
 
-      // Update table availability
       await _tableRepository.bookTableSeat(tableId);
 
       return booking.copyWith(id: id);
@@ -53,7 +44,6 @@ class BookingRepository {
     }
   }
 
-  // Get booking by ID
   Future<BookingModel?> getBookingById(int id) async {
     try {
       final result = await _databaseHelper.query(
@@ -73,7 +63,6 @@ class BookingRepository {
     }
   }
 
-  // Get active booking by user ID
   Future<BookingModel?> getActiveBookingByUserId(int userId) async {
     try {
       final result = await _databaseHelper.query(
@@ -98,7 +87,6 @@ class BookingRepository {
     }
   }
 
-// Cancel booking
   Future<bool> cancelBooking(int bookingId, int userId) async {
     try {
       final booking = await getBookingById(bookingId);
@@ -114,7 +102,6 @@ class BookingRepository {
         throw Exception('Booking cannot be cancelled');
       }
 
-      // Update booking status
       final result = await _databaseHelper.update(
         AppConstants.bookingsTable,
         {'status': AppConstants.bookingStatusCancelled},
@@ -123,7 +110,6 @@ class BookingRepository {
       );
 
       if (result > 0) {
-        // Free up table seat
         await _tableRepository.cancelTableSeat(booking.tableId);
         return true;
       }
@@ -134,7 +120,6 @@ class BookingRepository {
     }
   }
 
-  // Check-in booking
   Future<bool> checkinBooking(int bookingId, int userId) async {
     try {
       final booking = await getBookingById(bookingId);
@@ -150,14 +135,11 @@ class BookingRepository {
         throw Exception('Only active bookings can be checked in');
       }
 
-      // Check if booking has expired
       if (AppUtils.hasBookingExpired(booking.bookingTimeEpoch)) {
-        // Mark as no-show
         await _markAsNoShow(bookingId, booking.tableId);
         throw Exception('Booking has expired');
       }
 
-      // Update booking status
       final result = await _databaseHelper.update(
         AppConstants.bookingsTable,
         {
@@ -174,7 +156,6 @@ class BookingRepository {
     }
   }
 
-  // Modify booking (change table)
   Future<bool> modifyBooking(int bookingId, int userId, int newTableId) async {
     try {
       final booking = await getBookingById(bookingId);
@@ -190,23 +171,19 @@ class BookingRepository {
         throw Exception('Only active bookings can be modified');
       }
 
-      // Check if new table has available seats
       final hasSeats = await _tableRepository.hasAvailableSeats(newTableId);
       if (!hasSeats) {
         throw Exception(AppConstants.errorTableNotAvailable);
       }
 
       if (booking.tableId == newTableId) {
-        return true; // No change needed
+        return true;
       }
 
-      // Free up old table seat
       await _tableRepository.cancelTableSeat(booking.tableId);
 
-      // Book new table seat
       await _tableRepository.bookTableSeat(newTableId);
 
-      // Update booking
       final result = await _databaseHelper.update(
         AppConstants.bookingsTable,
         {'table_id': newTableId},
@@ -215,7 +192,6 @@ class BookingRepository {
       );
 
       if (result == 0) {
-        // Rollback table changes if booking update failed
         await _tableRepository.bookTableSeat(booking.tableId);
         await _tableRepository.cancelTableSeat(newTableId);
         throw Exception('Failed to update booking');
@@ -227,7 +203,6 @@ class BookingRepository {
     }
   }
 
-  // Checkout booking (replaces complete booking)
   Future<bool> checkoutBooking(int bookingId, int userId) async {
     try {
       final booking = await getBookingById(bookingId);
@@ -243,7 +218,6 @@ class BookingRepository {
         throw Exception('Booking must be checked in to checkout');
       }
 
-      // Update booking status to completed
       final result = await _databaseHelper.update(
         AppConstants.bookingsTable,
         {'status': AppConstants.bookingStatusCompleted},
@@ -252,7 +226,6 @@ class BookingRepository {
       );
 
       if (result > 0) {
-        // Free up table seat
         await _tableRepository.cancelTableSeat(booking.tableId);
         return true;
       }
@@ -263,7 +236,6 @@ class BookingRepository {
     }
   }
 
-  // Mark booking as no-show
   Future<bool> _markAsNoShow(int bookingId, int tableId) async {
     try {
       final result = await _databaseHelper.update(
@@ -274,7 +246,6 @@ class BookingRepository {
       );
 
       if (result > 0) {
-        // Free up table seat
         await _tableRepository.cancelTableSeat(tableId);
         return true;
       }
@@ -285,7 +256,6 @@ class BookingRepository {
     }
   }
 
-  // Get bookings by user ID
   Future<List<BookingModel>> getBookingsByUserId(int userId) async {
     try {
       final result = await _databaseHelper.query(
@@ -301,7 +271,6 @@ class BookingRepository {
     }
   }
 
-  // Get bookings by table ID
   Future<List<BookingModel>> getBookingsByTableId(int tableId) async {
     try {
       final result = await _databaseHelper.query(
@@ -317,7 +286,6 @@ class BookingRepository {
     }
   }
 
-  // Get all bookings
   Future<List<BookingModel>> getAllBookings() async {
     try {
       final result = await _databaseHelper.query(
@@ -331,7 +299,6 @@ class BookingRepository {
     }
   }
 
-  // Check and handle expired bookings
   Future<void> handleExpiredBookings() async {
     try {
       final activeBookings = await _databaseHelper.query(
@@ -352,7 +319,6 @@ class BookingRepository {
     }
   }
 
-  // Get booking with table and user details
   Future<Map<String, dynamic>?> getBookingWithDetails(int bookingId) async {
     try {
       final result = await _databaseHelper.rawQuery('''

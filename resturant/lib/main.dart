@@ -13,12 +13,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    // Initialize database
     await DatabaseHelper().database;
 
     runApp(RestaurantApp());
   } catch (e) {
-    // Handle initialization error
     runApp(ErrorApp(error: e.toString()));
   }
 }
@@ -124,7 +122,6 @@ class ErrorApp extends StatelessWidget {
                 const SizedBox(height: 24),
                 ElevatedButton(
                   onPressed: () {
-                    // Restart app
                     main();
                   },
                   style: ElevatedButton.styleFrom(

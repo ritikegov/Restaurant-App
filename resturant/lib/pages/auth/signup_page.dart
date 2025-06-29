@@ -32,15 +32,12 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Sign Up'),
-      // ),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
           try {
             if (state is AuthSignupSuccess) {
               AppUtils.showToast(context, state.message);
-              context.router.pop(); // Go back to login page
+              context.router.pop();
             } else if (state is AuthError) {
               AppUtils.showToast(context, state.message, isError: true);
             }
@@ -57,7 +54,6 @@ class _SignupPageState extends State<SignupPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // App Logo/Title
                   const Icon(
                     Icons.person_add,
                     size: 80,
@@ -74,8 +70,6 @@ class _SignupPageState extends State<SignupPage> {
                     ),
                   ),
                   const SizedBox(height: 32),
-
-                  // Username Field
                   TextFormField(
                     controller: _usernameController,
                     decoration: const InputDecoration(
@@ -87,8 +81,6 @@ class _SignupPageState extends State<SignupPage> {
                     textInputAction: TextInputAction.next,
                   ),
                   const SizedBox(height: 16),
-
-                  // Password Field
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
@@ -113,8 +105,6 @@ class _SignupPageState extends State<SignupPage> {
                     textInputAction: TextInputAction.next,
                   ),
                   const SizedBox(height: 16),
-
-                  // Confirm Password Field
                   TextFormField(
                     controller: _confirmPasswordController,
                     decoration: InputDecoration(
@@ -152,8 +142,6 @@ class _SignupPageState extends State<SignupPage> {
                     onFieldSubmitted: (_) => _handleSignup(),
                   ),
                   const SizedBox(height: 24),
-
-                  // Signup Button
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
                       final isLoading = state is AuthLoading;
@@ -178,8 +166,6 @@ class _SignupPageState extends State<SignupPage> {
                     },
                   ),
                   const SizedBox(height: 16),
-
-                  // Login Link
                   TextButton(
                     onPressed: () {
                       try {

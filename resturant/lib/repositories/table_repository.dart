@@ -5,7 +5,6 @@ import '../models/table_model.dart';
 class TableRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
 
-  // Get all tables
   Future<List<TableModel>> getAllTables() async {
     try {
       final result = await _databaseHelper.query(
@@ -19,7 +18,6 @@ class TableRepository {
     }
   }
 
-  // Get table by ID
   Future<TableModel?> getTableById(int id) async {
     try {
       final result = await _databaseHelper.query(
@@ -39,7 +37,6 @@ class TableRepository {
     }
   }
 
-  // Update table availability
   Future<bool> updateTableAvailability(int tableId, int availableSeats) async {
     try {
       final result = await _databaseHelper.update(
@@ -55,7 +52,6 @@ class TableRepository {
     }
   }
 
-  // Book a seat at table (decrease available seats)
   Future<bool> bookTableSeat(int tableId) async {
     try {
       final table = await getTableById(tableId);
@@ -74,7 +70,6 @@ class TableRepository {
     }
   }
 
-  // Cancel booking (increase available seats)
   Future<bool> cancelTableSeat(int tableId) async {
     try {
       final table = await getTableById(tableId);
@@ -83,7 +78,7 @@ class TableRepository {
       }
 
       if (table.availableSeats >= table.totalCapacity) {
-        return true; // Already at full capacity
+        return true;
       }
 
       final newAvailableSeats = table.availableSeats + 1;
@@ -93,7 +88,6 @@ class TableRepository {
     }
   }
 
-  // Get available tables (tables with at least one available seat)
   Future<List<TableModel>> getAvailableTables() async {
     try {
       final result = await _databaseHelper.query(
@@ -108,7 +102,6 @@ class TableRepository {
     }
   }
 
-  // Get tables by availability status
   Future<List<TableModel>> getTablesByAvailability({
     bool? isFullyAvailable,
     bool? isPartiallyAvailable,
@@ -138,7 +131,6 @@ class TableRepository {
     }
   }
 
-  // Reset all tables to full availability (for testing/admin purposes)
   Future<bool> resetAllTables() async {
     try {
       final result = await _databaseHelper.update(
@@ -152,7 +144,6 @@ class TableRepository {
     }
   }
 
-  // Get table statistics
   Future<Map<String, int>> getTableStatistics() async {
     try {
       final tables = await getAllTables();
@@ -190,7 +181,6 @@ class TableRepository {
     }
   }
 
-  // Check if table has available seats
   Future<bool> hasAvailableSeats(int tableId) async {
     try {
       final table = await getTableById(tableId);
@@ -200,7 +190,6 @@ class TableRepository {
     }
   }
 
-  // Get table with booking info
   Future<Map<String, dynamic>?> getTableWithBookingInfo(int tableId) async {
     try {
       final result = await _databaseHelper.rawQuery('''

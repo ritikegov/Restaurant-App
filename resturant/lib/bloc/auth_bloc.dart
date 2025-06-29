@@ -5,7 +5,6 @@ import '../core/utils.dart';
 import '../models/user_model.dart';
 import '../repositories/user_repository.dart';
 
-// Events
 abstract class AuthEvent {}
 
 class AuthLoginRequested extends AuthEvent {
@@ -26,7 +25,6 @@ class AuthLogoutRequested extends AuthEvent {}
 
 class AuthCheckLoginStatus extends AuthEvent {}
 
-// States
 abstract class AuthState {}
 
 class AuthInitial extends AuthState {}
@@ -53,7 +51,6 @@ class AuthSignupSuccess extends AuthState {
   AuthSignupSuccess({required this.message});
 }
 
-// BLoC
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserRepository _userRepository = UserRepository();
   UserModel? _currentUser;
@@ -72,7 +69,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(AuthLoading());
 
-      // Validate input
       final usernameError = AppUtils.validateUsername(event.username);
       if (usernameError != null) {
         emit(AuthError(message: usernameError));
@@ -85,7 +81,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         return;
       }
 
-      // Authenticate user
       final user = await _userRepository.authenticateUser(
           event.username, event.password);
 
@@ -106,7 +101,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     try {
       emit(AuthLoading());
 
-      // Validate input
       final usernameError = AppUtils.validateUsername(event.username);
       if (usernameError != null) {
         emit(AuthError(message: usernameError));
@@ -119,7 +113,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         return;
       }
 
-      // Create user
       final user =
           await _userRepository.createUser(event.username, event.password);
 
@@ -166,7 +159,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
       }
 
-      // Clear invalid session
       await _clearUserSession();
       emit(AuthUnauthenticated());
     } catch (e) {

@@ -5,7 +5,6 @@ import '../models/menu_item_model.dart';
 class MenuRepository {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
 
-  // Get all menu items
   Future<List<MenuItemModel>> getAllMenuItems() async {
     try {
       final result = await _databaseHelper.query(
@@ -19,7 +18,6 @@ class MenuRepository {
     }
   }
 
-  // Get menu item by ID
   Future<MenuItemModel?> getMenuItemById(int id) async {
     try {
       final result = await _databaseHelper.query(
@@ -39,7 +37,6 @@ class MenuRepository {
     }
   }
 
-  // Get menu items by category
   Future<List<MenuItemModel>> getMenuItemsByCategory(String category) async {
     try {
       final result = await _databaseHelper.query(
@@ -55,7 +52,6 @@ class MenuRepository {
     }
   }
 
-  // Get all categories
   Future<List<String>> getCategories() async {
     try {
       final result = await _databaseHelper.rawQuery('''
@@ -70,7 +66,6 @@ class MenuRepository {
     }
   }
 
-  // Add menu item
   Future<MenuItemModel?> addMenuItem(MenuItemModel menuItem) async {
     try {
       final id = await _databaseHelper.insert(
@@ -84,7 +79,6 @@ class MenuRepository {
     }
   }
 
-  // Update menu item
   Future<bool> updateMenuItem(MenuItemModel menuItem) async {
     try {
       if (menuItem.id == null) {
@@ -104,7 +98,6 @@ class MenuRepository {
     }
   }
 
-  // Delete menu item
   Future<bool> deleteMenuItem(int id) async {
     try {
       final result = await _databaseHelper.delete(
@@ -119,7 +112,6 @@ class MenuRepository {
     }
   }
 
-  // Search menu items
   Future<List<MenuItemModel>> searchMenuItems(String query) async {
     try {
       final result = await _databaseHelper.query(
@@ -135,7 +127,6 @@ class MenuRepository {
     }
   }
 
-  // Get menu items by price range
   Future<List<MenuItemModel>> getMenuItemsByPriceRange(
       int minPriceInPaise, int maxPriceInPaise) async {
     try {
@@ -152,11 +143,8 @@ class MenuRepository {
     }
   }
 
-  // Get popular menu items (placeholder for future implementation)
   Future<List<MenuItemModel>> getPopularMenuItems({int limit = 10}) async {
     try {
-      // For now, just return the first few items
-      // In a real app, this could be based on order frequency
       final result = await _databaseHelper.query(
         AppConstants.menuItemsTable,
         orderBy: 'name ASC',

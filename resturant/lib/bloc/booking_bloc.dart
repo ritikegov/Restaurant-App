@@ -2,7 +2,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/booking_model.dart';
 import '../repositories/booking_repository.dart';
 
-// Events
 abstract class BookingEvent {}
 
 class BookingCreate extends BookingEvent {
@@ -58,7 +57,6 @@ class BookingLoadHistory extends BookingEvent {
 
 class BookingCheckExpired extends BookingEvent {}
 
-// States
 abstract class BookingState {}
 
 class BookingInitial extends BookingState {}
@@ -85,7 +83,6 @@ class BookingError extends BookingState {
   BookingError({required this.message});
 }
 
-// BLoC
 class BookingBloc extends Bloc<BookingEvent, BookingState> {
   final BookingRepository _bookingRepository = BookingRepository();
 
@@ -114,7 +111,6 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           booking: booking,
         ));
 
-        // Load updated user booking
         add(BookingLoadUserBooking(userId: event.userId));
       } else {
         emit(BookingError(message: 'Failed to create booking'));
@@ -135,7 +131,6 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       if (success) {
         emit(BookingSuccess(message: 'Booking cancelled successfully!'));
 
-        // Load updated user booking
         add(BookingLoadUserBooking(userId: event.userId));
       } else {
         emit(BookingError(message: 'Failed to cancel booking'));
@@ -156,7 +151,6 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       if (success) {
         emit(BookingSuccess(message: 'Checked in successfully!'));
 
-        // Load updated user booking
         add(BookingLoadUserBooking(userId: event.userId));
       } else {
         emit(BookingError(message: 'Failed to check in'));
@@ -180,7 +174,6 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       if (success) {
         emit(BookingSuccess(message: 'Booking modified successfully!'));
 
-        // Load updated user booking
         add(BookingLoadUserBooking(userId: event.userId));
       } else {
         emit(BookingError(message: 'Failed to modify booking'));
@@ -201,7 +194,6 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       if (success) {
         emit(BookingSuccess(message: 'Checked out successfully!'));
 
-        // Load updated user booking
         add(BookingLoadUserBooking(userId: event.userId));
       } else {
         emit(BookingError(message: 'Failed to checkout'));
@@ -255,12 +247,9 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       BookingCheckExpired event, Emitter<BookingState> emit) async {
     try {
       await _bookingRepository.handleExpiredBookings();
-    } catch (e) {
-      // Silent fail for expired booking check
-    }
+    } catch (e) {}
   }
 
-  // Helper methods
   BookingModel? getCurrentUserBooking() {
     final currentState = state;
     if (currentState is BookingLoaded && currentState.userBooking != null) {
