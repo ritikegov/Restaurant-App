@@ -95,12 +95,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   Widget _buildOrderHistory(OrderHistoryLoaded state) {
     return Column(
       children: [
-        // Current order section
-        if (state.currentOrder != null) ...[
-          _buildCurrentOrderSection(state.currentOrder!),
-          const Divider(thickness: 8),
-        ],
-
         // Order history section
         Expanded(
           child: state.orders.isEmpty
@@ -108,34 +102,6 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
               : _buildOrdersList(state.orders),
         ),
       ],
-    );
-  }
-
-  Widget _buildCurrentOrderSection(OrderModel currentOrder) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      color: Colors.blue[50],
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.restaurant, color: Colors.blue[700]),
-              const SizedBox(width: 8),
-              Text(
-                'Current Order',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue[700],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          _buildOrderCard(currentOrder, isCurrent: true),
-        ],
-      ),
     );
   }
 
