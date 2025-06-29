@@ -62,8 +62,6 @@ class AppConstants {
       'You already have an active booking';
   static const String errorBookingNotFound = 'Booking not found';
   static const String errorNoActiveBooking = 'No active booking found';
-  static const String errorCannotBookWithin23Hours =
-      'You can book again after 23 hours from your last booking';
   static const String errorCheckinRequired = 'Please check-in to place orders';
   static const String errorDatabaseOperation = 'Database operation failed';
 
@@ -75,6 +73,7 @@ class AppConstants {
       'Booking cancelled successfully';
   static const String successBookingModified = 'Booking modified successfully';
   static const String successCheckedIn = 'Checked in successfully';
+  static const String successCheckedOut = 'Checked out successfully';
   static const String successOrderPlaced = 'Order placed successfully';
 
   // Booking Status
