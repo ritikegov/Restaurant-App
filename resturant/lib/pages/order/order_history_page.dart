@@ -33,7 +33,8 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
         context.read<OrderBloc>().add(OrderLoadHistory(userId: userId));
       }
     } catch (e) {
-      AppUtils.showToast(context, 'Error loading orders: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.errorLoadingOrders} $e',
+          isError: true);
     }
   }
 
@@ -41,7 +42,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order History'),
+        title: Text(AppConstants.orderHistory),
         actions: [
           IconButton(
             icon: const Icon(Icons.home),
@@ -50,11 +51,12 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                 context.maybePop();
                 context.router.push(HomeRoute());
               } catch (e) {
-                AppUtils.showToast(context, 'Navigation error: $e',
+                AppUtils.showToast(
+                    context, '${AppConstants.errorNavigation} $e',
                     isError: true);
               }
             },
-            tooltip: 'Home',
+            tooltip: AppConstants.home,
           ),
         ],
       ),
@@ -82,7 +84,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
               } else if (state is OrderError) {
                 return _buildErrorWidget(state.message);
               } else {
-                return const Center(child: Text('Loading orders...'));
+                return Center(child: Text(AppConstants.loadingOrders));
               }
             },
           ),
@@ -110,7 +112,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
         Padding(
           padding: const EdgeInsets.all(16),
           child: Text(
-            'Order History (${orders.length})',
+            '${AppConstants.orderHistoryCount} (${orders.length})',
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -147,7 +149,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Order #${order.id}',
+                    '${AppConstants.orderPrefix}${order.id}',
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -173,7 +175,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                       size: 16, color: Colors.grey[600]),
                   const SizedBox(width: 4),
                   Text(
-                    'Table ${order.tableId}',
+                    '${AppConstants.tablePrefix}${order.tableId}',
                     style: TextStyle(color: Colors.grey[600]),
                   ),
                 ],
@@ -183,7 +185,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Total Amount',
+                    AppConstants.totalAmount,
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey[700],
@@ -207,7 +209,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                       child: OutlinedButton.icon(
                         onPressed: () => _handleCancelOrder(order),
                         icon: const Icon(Icons.cancel, size: 16),
-                        label: const Text('Cancel'),
+                        label: Text(AppConstants.cancel),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.red,
                         ),
@@ -218,7 +220,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                       child: ElevatedButton.icon(
                         onPressed: () => _viewOrderDetails(order),
                         icon: const Icon(Icons.visibility, size: 16),
-                        label: const Text('View Details'),
+                        label: Text(AppConstants.viewDetails),
                       ),
                     ),
                   ],
@@ -230,7 +232,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                   child: ElevatedButton.icon(
                     onPressed: () => _viewOrderDetails(order),
                     icon: const Icon(Icons.visibility, size: 16),
-                    label: const Text('View Details'),
+                    label: Text(AppConstants.viewDetails),
                   ),
                 ),
               ],
@@ -242,7 +244,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
       return Card(
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Text('Error displaying order: $e'),
+          child: Text('${AppConstants.errorDisplayingOrder} $e'),
         ),
       );
     }
@@ -260,14 +262,14 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            'No Orders Yet',
+            AppConstants.noOrdersYet,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: Colors.grey[600],
                 ),
           ),
           const SizedBox(height: 8),
           Text(
-            'You haven\'t placed any orders yet',
+            AppConstants.noOrdersDescription,
             style: TextStyle(color: Colors.grey[600]),
           ),
           const SizedBox(height: 16),
@@ -276,7 +278,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
               Navigator.of(context).pop();
             },
             icon: const Icon(Icons.restaurant_menu),
-            label: const Text('Order Now'),
+            label: Text(AppConstants.orderNow),
           ),
         ],
       ),
@@ -295,7 +297,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Error Loading Orders',
+            AppConstants.errorLoadingOrdersTitle,
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 8),
@@ -307,7 +309,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
           const SizedBox(height: 16),
           ElevatedButton(
             onPressed: _loadOrderHistory,
-            child: const Text('Retry'),
+            child: Text(AppConstants.retry),
           ),
         ],
       ),
@@ -318,18 +320,18 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Cancel Order'),
+        title: Text(AppConstants.cancelOrder),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Are you sure you want to cancel order #${order.id}?'),
+            Text('${AppConstants.confirmCancelOrder}${order.id}?'),
             const SizedBox(height: 8),
             Text(
-                'Amount: ${AppUtils.formatPriceFromPaise(order.totalAmountInPaise)}'),
+                '${AppConstants.amount} ${AppUtils.formatPriceFromPaise(order.totalAmountInPaise)}'),
             const SizedBox(height: 8),
             const Text(
-              'Note: Only pending orders can be cancelled.',
+              AppConstants.cancelOrderNote,
               style: TextStyle(
                 fontSize: 12,
                 fontStyle: FontStyle.italic,
@@ -340,7 +342,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('No'),
+            child: Text(AppConstants.no),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -355,12 +357,13 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                       );
                 }
               } catch (e) {
-                AppUtils.showToast(context, 'Cancel error: $e', isError: true);
+                AppUtils.showToast(context, '${AppConstants.cancelError} $e',
+                    isError: true);
               }
             },
             style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            child: const Text('Yes, Cancel',
-                style: TextStyle(color: Colors.white)),
+            child: Text(AppConstants.yesCancelOrder,
+                style: const TextStyle(color: Colors.white)),
           ),
         ],
       ),
@@ -391,20 +394,22 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Order #${order.id} Details'),
+            title: Text(
+                '${AppConstants.orderPrefix}${order.id} ${AppConstants.orderDetailsTitle}'),
             content: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildDetailRow('Order Time',
+                  _buildDetailRow(AppConstants.orderTime,
                       AppUtils.formatEpochToIST(order.orderTimeEpoch)),
-                  _buildDetailRow('Table', 'Table ${order.tableId}'),
-                  _buildDetailRow('Total Amount',
+                  _buildDetailRow(AppConstants.table,
+                      '${AppConstants.tablePrefix}${order.tableId}'),
+                  _buildDetailRow(AppConstants.totalAmount,
                       AppUtils.formatPriceFromPaise(order.totalAmountInPaise)),
                   const SizedBox(height: 16),
                   const Text(
-                    'Order Items:',
+                    AppConstants.orderItems,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                   const SizedBox(height: 8),
@@ -424,7 +429,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                                           fontWeight: FontWeight.w500),
                                     ),
                                     Text(
-                                      'Qty: ${item['quantity']} × ${AppUtils.formatPriceFromPaise(item['price'])}',
+                                      '${AppConstants.quantity} ${item['quantity']} × ${AppUtils.formatPriceFromPaise(item['price'])}',
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.grey[600],
@@ -445,7 +450,7 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
                         )),
                   ] else ...[
                     const Text(
-                      'No items found',
+                      AppConstants.noItemsFound,
                       style: TextStyle(
                         fontStyle: FontStyle.italic,
                         color: Colors.grey,
@@ -458,14 +463,14 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Close'),
+                child: Text(AppConstants.close),
               ),
             ],
           ),
         );
       }
     } catch (e) {
-      AppUtils.showToast(context, 'Error loading order details: $e',
+      AppUtils.showToast(context, '${AppConstants.errorLoadingOrderDetails} $e',
           isError: true);
     }
   }
@@ -493,7 +498,8 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     try {
       _loadOrderHistory();
     } catch (e) {
-      AppUtils.showToast(context, 'Refresh error: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.refreshError} $e',
+          isError: true);
     }
   }
 }

@@ -40,7 +40,8 @@ class _LoginPageState extends State<LoginPage> {
               AppUtils.showToast(context, state.message, isError: true);
             } else if (state is AuthUnauthenticated) {}
           } catch (e) {
-            AppUtils.showToast(context, 'Navigation error: $e', isError: true);
+            AppUtils.showToast(context, '${AppConstants.errorNavigation} $e',
+                isError: true);
           }
         },
         child: SafeArea(
@@ -52,10 +53,9 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Icon(
-                    Icons.restaurant,
-                    size: 80,
-                    color: Colors.blue,
+                  Image.asset(
+                    'assets/images/logo.png',
+                    height: 140,
                   ),
                   const SizedBox(height: 16),
                   const Text(
@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                   TextFormField(
                     controller: _usernameController,
                     decoration: const InputDecoration(
-                      labelText: 'Username',
+                      labelText: AppConstants.loginUsername,
                       prefixIcon: Icon(Icons.person),
                     ),
                     validator: AppUtils.validateUsername,
@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
-                      labelText: 'Password',
+                      labelText: AppConstants.loginPassword,
                       prefixIcon: const Icon(Icons.lock),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -119,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               )
                             : const Text(
-                                'Login',
+                                AppConstants.login,
                                 style: TextStyle(fontSize: 16),
                               ),
                       );
@@ -131,12 +131,13 @@ class _LoginPageState extends State<LoginPage> {
                       try {
                         context.router.push(const SignupRoute());
                       } catch (e) {
-                        AppUtils.showToast(context, 'Navigation error: $e',
+                        AppUtils.showToast(
+                            context, '${AppConstants.errorNavigation} $e',
                             isError: true);
                       }
                     },
                     child: const Text(
-                      'Don\'t have an account? Sign up',
+                      AppConstants.singupMessage,
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -160,7 +161,8 @@ class _LoginPageState extends State<LoginPage> {
             );
       }
     } catch (e) {
-      AppUtils.showToast(context, 'Login error: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.errorLogin} $e',
+          isError: true);
     }
   }
 }

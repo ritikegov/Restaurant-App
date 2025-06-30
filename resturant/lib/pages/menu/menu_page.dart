@@ -28,7 +28,7 @@ class _MenuPageState extends State<MenuPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Menu'),
+        title: Text(AppConstants.menu),
         actions: [
           IconButton(
             icon: const Icon(Icons.shopping_cart),
@@ -36,7 +36,8 @@ class _MenuPageState extends State<MenuPage> {
               try {
                 context.router.push(const OrderRoute());
               } catch (e) {
-                AppUtils.showToast(context, 'Navigation error: $e',
+                AppUtils.showToast(
+                    context, '${AppConstants.errorNavigation} $e',
                     isError: true);
               }
             },
@@ -47,11 +48,12 @@ class _MenuPageState extends State<MenuPage> {
               try {
                 context.router.replaceAll([HomeRoute()]);
               } catch (e) {
-                AppUtils.showToast(context, 'Navigation error: $e',
+                AppUtils.showToast(
+                    context, '${AppConstants.errorNavigation} $e',
                     isError: true);
               }
             },
-            tooltip: 'Home',
+            tooltip: AppConstants.home,
           ),
         ],
       ),
@@ -66,7 +68,7 @@ class _MenuPageState extends State<MenuPage> {
             } else if (state is MenuError) {
               return _buildErrorWidget(state.message);
             } else {
-              return const Center(child: Text('Loading menu...'));
+              return Center(child: Text(AppConstants.loadingMenu));
             }
           },
         ),
@@ -101,7 +103,7 @@ class _MenuPageState extends State<MenuPage> {
             return Padding(
               padding: const EdgeInsets.only(right: 8),
               child: FilterChip(
-                label: const Text('All'),
+                label: Text(AppConstants.all),
                 selected: isSelected,
                 onSelected: (_) {
                   setState(() {
@@ -274,7 +276,7 @@ class _MenuPageState extends State<MenuPage> {
         margin: const EdgeInsets.only(bottom: 12),
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Text('Error displaying item: $e'),
+          child: Text('${AppConstants.errorDisplayingItem} $e'),
         ),
       );
     }
@@ -292,7 +294,7 @@ class _MenuPageState extends State<MenuPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            'No Menu Items',
+            AppConstants.noMenuItems,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: Colors.grey[600],
                 ),
@@ -300,8 +302,8 @@ class _MenuPageState extends State<MenuPage> {
           const SizedBox(height: 8),
           Text(
             _selectedCategory != null
-                ? 'No items in $_selectedCategory category'
-                : 'Menu is empty',
+                ? '${AppConstants.noItemsInCategory} $_selectedCategory ${AppConstants.categoryText}'
+                : AppConstants.menuIsEmpty,
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.grey[600]),
           ),
@@ -310,7 +312,7 @@ class _MenuPageState extends State<MenuPage> {
             onPressed: () {
               context.read<MenuBloc>().add(MenuRefreshRequested());
             },
-            child: const Text('Refresh'),
+            child: Text(AppConstants.refresh),
           ),
         ],
       ),
@@ -329,7 +331,7 @@ class _MenuPageState extends State<MenuPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Error Loading Menu',
+            AppConstants.errorLoadingMenu,
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 8),
@@ -343,7 +345,7 @@ class _MenuPageState extends State<MenuPage> {
             onPressed: () {
               context.read<MenuBloc>().add(MenuLoadRequested());
             },
-            child: const Text('Retry'),
+            child: Text(AppConstants.retry),
           ),
         ],
       ),
@@ -369,7 +371,8 @@ class _MenuPageState extends State<MenuPage> {
     try {
       context.read<MenuBloc>().add(MenuRefreshRequested());
     } catch (e) {
-      AppUtils.showToast(context, 'Refresh error: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.refreshError} $e',
+          isError: true);
     }
   }
 }

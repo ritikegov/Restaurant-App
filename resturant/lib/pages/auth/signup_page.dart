@@ -42,7 +42,8 @@ class _SignupPageState extends State<SignupPage> {
               AppUtils.showToast(context, state.message, isError: true);
             }
           } catch (e) {
-            AppUtils.showToast(context, 'Navigation error: $e', isError: true);
+            AppUtils.showToast(context, '${AppConstants.errorNavigation} $e',
+                isError: true);
           }
         },
         child: SafeArea(
@@ -61,7 +62,7 @@ class _SignupPageState extends State<SignupPage> {
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    'Create Account',
+                    AppConstants.createAccount,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 28,
@@ -73,9 +74,9 @@ class _SignupPageState extends State<SignupPage> {
                   TextFormField(
                     controller: _usernameController,
                     decoration: const InputDecoration(
-                      labelText: 'Username',
+                      labelText: AppConstants.loginUsername,
                       prefixIcon: Icon(Icons.person),
-                      helperText: 'Username must be 3-20 characters',
+                      helperText: AppConstants.errorUsernameLength,
                     ),
                     validator: AppUtils.validateUsername,
                     textInputAction: TextInputAction.next,
@@ -84,9 +85,9 @@ class _SignupPageState extends State<SignupPage> {
                   TextFormField(
                     controller: _passwordController,
                     decoration: InputDecoration(
-                      labelText: 'Password',
+                      labelText: AppConstants.loginPassword,
                       prefixIcon: const Icon(Icons.lock),
-                      helperText: 'Password must be at least 6 characters',
+                      helperText: AppConstants.errorPasswordLength,
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible
@@ -108,7 +109,7 @@ class _SignupPageState extends State<SignupPage> {
                   TextFormField(
                     controller: _confirmPasswordController,
                     decoration: InputDecoration(
-                      labelText: 'Confirm Password',
+                      labelText: AppConstants.confirmPassword,
                       prefixIcon: const Icon(Icons.lock_outline),
                       suffixIcon: IconButton(
                         icon: Icon(
@@ -128,14 +129,14 @@ class _SignupPageState extends State<SignupPage> {
                     validator: (value) {
                       try {
                         if (value == null || value.isEmpty) {
-                          return 'Please confirm your password';
+                          return AppConstants.confrimPasswordDescription;
                         }
                         if (value != _passwordController.text) {
-                          return 'Passwords do not match';
+                          return AppConstants.passwordNotMatch;
                         }
                         return null;
                       } catch (e) {
-                        return 'Validation error';
+                        return AppConstants.errorValidation;
                       }
                     },
                     textInputAction: TextInputAction.done,
@@ -159,7 +160,7 @@ class _SignupPageState extends State<SignupPage> {
                                 ),
                               )
                             : const Text(
-                                'Sign Up',
+                                AppConstants.signUp,
                                 style: TextStyle(fontSize: 16),
                               ),
                       );
@@ -171,12 +172,13 @@ class _SignupPageState extends State<SignupPage> {
                       try {
                         context.router.pop();
                       } catch (e) {
-                        AppUtils.showToast(context, 'Navigation error: $e',
+                        AppUtils.showToast(
+                            context, '${AppConstants.errorNavigation} $e',
                             isError: true);
                       }
                     },
                     child: const Text(
-                      'Already have an account? Login',
+                      AppConstants.alreadyAccountDescription,
                       style: TextStyle(fontSize: 16),
                     ),
                   ),
@@ -200,7 +202,8 @@ class _SignupPageState extends State<SignupPage> {
             );
       }
     } catch (e) {
-      AppUtils.showToast(context, 'Signup error: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.errorSignUp} $e',
+          isError: true);
     }
   }
 }

@@ -35,7 +35,8 @@ class _HomePageState extends State<HomePage> {
         });
       }
     } catch (e) {
-      AppUtils.showToast(context, 'Error loading user info: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.errorUserLoading} $e',
+          isError: true);
     }
   }
 
@@ -47,7 +48,8 @@ class _HomePageState extends State<HomePage> {
         context.read<BookingBloc>().add(BookingLoadUserBooking(userId: userId));
       }
     } catch (e) {
-      AppUtils.showToast(context, 'Error loading booking: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.errorBookingLoading} $e',
+          isError: true);
     }
   }
 
@@ -55,13 +57,14 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Welcome ${_username ?? 'User'}!'),
+        title: Text(
+            '${AppConstants.welcome} ${_username ?? AppConstants.user}${AppConstants.exclamation}'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: _handleLogout,
-            tooltip: 'Logout',
+            tooltip: AppConstants.logout,
           ),
         ],
       ),
@@ -108,7 +111,7 @@ class _HomePageState extends State<HomePage> {
                   Icon(Icons.event_seat, color: Colors.blue[700]),
                   const SizedBox(width: 8),
                   Text(
-                    'Current Booking',
+                    AppConstants.currentBooking,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -135,9 +138,10 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               const SizedBox(height: 8),
-              Text('Table: ${booking['table_name'] ?? 'Unknown'}'),
               Text(
-                  'Booked: ${AppUtils.formatEpochToIST(booking['booking_time_epoch'] ?? 0)}'),
+                  '${AppConstants.table}: ${booking['table_name'] ?? AppConstants.unknown}'),
+              Text(
+                  '${AppConstants.booked}: ${AppUtils.formatEpochToIST(booking['booking_time_epoch'] ?? 0)}'),
               const SizedBox(height: 12),
               if (booking['status'] == AppConstants.bookingStatusActive) ...[
                 Row(
@@ -146,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                       child: ElevatedButton.icon(
                         onPressed: _handleCheckin,
                         icon: const Icon(Icons.check_circle, size: 16),
-                        label: const Text('Check In'),
+                        label: Text(AppConstants.checkIn),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
                           foregroundColor: Colors.white,
@@ -158,7 +162,7 @@ class _HomePageState extends State<HomePage> {
                       child: OutlinedButton.icon(
                         onPressed: _handleCancelBooking,
                         icon: const Icon(Icons.cancel, size: 16),
-                        label: const Text('Cancel'),
+                        label: Text(AppConstants.cancel),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.red,
                         ),
@@ -176,12 +180,13 @@ class _HomePageState extends State<HomePage> {
                           try {
                             context.router.push(const OrderRoute());
                           } catch (e) {
-                            AppUtils.showToast(context, 'Navigation error: $e',
+                            AppUtils.showToast(
+                                context, '${AppConstants.errorNavigation} $e',
                                 isError: true);
                           }
                         },
                         icon: const Icon(Icons.restaurant, size: 16),
-                        label: const Text('Order Food'),
+                        label: Text(AppConstants.orderFood),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange,
                           foregroundColor: Colors.white,
@@ -193,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                       child: ElevatedButton.icon(
                         onPressed: _handleCheckoutBooking,
                         icon: const Icon(Icons.logout, size: 16),
-                        label: const Text('Checkout'),
+                        label: Text(AppConstants.checkout),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
                           foregroundColor: Colors.white,
@@ -213,7 +218,7 @@ class _HomePageState extends State<HomePage> {
         color: Colors.red[50],
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Text('Error displaying booking: $e'),
+          child: Text('${AppConstants.errorDisplayingBooking} $e'),
         ),
       );
     }
@@ -250,7 +255,7 @@ class _HomePageState extends State<HomePage> {
           ),
           const SizedBox(height: 4),
           Text(
-            'Book tables, order food, and enjoy your dining experience',
+            AppConstants.bookTablesOrderFood,
             style: TextStyle(
               fontSize: 14,
               color: Colors.blue[100],
@@ -271,8 +276,8 @@ class _HomePageState extends State<HomePage> {
       childAspectRatio: 1.1,
       children: [
         _buildNavigationCard(
-          title: 'Book Table',
-          subtitle: 'Reserve your table',
+          title: AppConstants.bookTable,
+          subtitle: AppConstants.reserveYourTable,
           icon: Icons.event_seat,
           color: Colors.green,
           onTap: () async {
@@ -281,15 +286,16 @@ class _HomePageState extends State<HomePage> {
               await context.router.push(const BookingRoute());
             } catch (e) {
               if (mounted) {
-                AppUtils.showToast(context, 'Navigation error: $e',
+                AppUtils.showToast(
+                    context, '${AppConstants.errorNavigation} $e',
                     isError: true);
               }
             }
           },
         ),
         _buildNavigationCard(
-          title: 'Menu',
-          subtitle: 'Browse our delicious menu',
+          title: AppConstants.menu,
+          subtitle: AppConstants.browseOurDeliciousMenu,
           icon: Icons.restaurant_menu,
           color: Colors.orange,
           onTap: () async {
@@ -298,15 +304,16 @@ class _HomePageState extends State<HomePage> {
               await context.router.push(const MenuRoute());
             } catch (e) {
               if (mounted) {
-                AppUtils.showToast(context, 'Navigation error: $e',
+                AppUtils.showToast(
+                    context, '${AppConstants.errorNavigation} $e',
                     isError: true);
               }
             }
           },
         ),
         _buildNavigationCard(
-          title: 'Order History',
-          subtitle: 'View your past orders',
+          title: AppConstants.orderHistory,
+          subtitle: AppConstants.viewYourPastOrders,
           icon: Icons.history,
           color: Colors.purple,
           onTap: () async {
@@ -315,15 +322,16 @@ class _HomePageState extends State<HomePage> {
               await context.router.push(const OrderHistoryRoute());
             } catch (e) {
               if (mounted) {
-                AppUtils.showToast(context, 'Navigation error: $e',
+                AppUtils.showToast(
+                    context, '${AppConstants.errorNavigation} $e',
                     isError: true);
               }
             }
           },
         ),
         _buildNavigationCard(
-          title: 'Profile',
-          subtitle: 'Manage your account',
+          title: AppConstants.profile,
+          subtitle: AppConstants.manageYourAccount,
           icon: Icons.person,
           color: Colors.blue,
           onTap: () async {
@@ -332,7 +340,8 @@ class _HomePageState extends State<HomePage> {
               await context.router.push(const ProfileRoute());
             } catch (e) {
               if (mounted) {
-                AppUtils.showToast(context, 'Navigation error: $e',
+                AppUtils.showToast(
+                    context, '${AppConstants.errorNavigation} $e',
                     isError: true);
               }
             }
@@ -423,7 +432,8 @@ class _HomePageState extends State<HomePage> {
         }
       }
     } catch (e) {
-      AppUtils.showToast(context, 'Error checking in: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.errorCheckingIn} $e',
+          isError: true);
     }
   }
 
@@ -437,18 +447,17 @@ class _HomePageState extends State<HomePage> {
           final confirmed = await showDialog<bool>(
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text('Checkout'),
-              content: const Text(
-                  'Are you sure you want to checkout? You will be able to book again immediately.'),
+              title: Text(AppConstants.checkout),
+              content: Text(AppConstants.confirmCheckout),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('No'),
+                  child: Text(AppConstants.no),
                 ),
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(true),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
-                  child: const Text('Yes, Checkout',
+                  child: Text(AppConstants.yesCheckout,
                       style: TextStyle(color: Colors.white)),
                 ),
               ],
@@ -466,7 +475,8 @@ class _HomePageState extends State<HomePage> {
         }
       }
     } catch (e) {
-      AppUtils.showToast(context, 'Error checking out: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.errorCheckingOut} $e',
+          isError: true);
     }
   }
 
@@ -480,17 +490,16 @@ class _HomePageState extends State<HomePage> {
           final confirmed = await showDialog<bool>(
             context: context,
             builder: (context) => AlertDialog(
-              title: const Text('Cancel Booking'),
-              content:
-                  const Text('Are you sure you want to cancel your booking?'),
+              title: Text(AppConstants.cancelBooking),
+              content: Text(AppConstants.confirmCancelBooking),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('No'),
+                  child: Text(AppConstants.no),
                 ),
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text('Yes'),
+                  child: Text(AppConstants.yes),
                 ),
               ],
             ),
@@ -507,7 +516,7 @@ class _HomePageState extends State<HomePage> {
         }
       }
     } catch (e) {
-      AppUtils.showToast(context, 'Error cancelling booking: $e',
+      AppUtils.showToast(context, '${AppConstants.errorCancellingBooking} $e',
           isError: true);
     }
   }
@@ -517,16 +526,16 @@ class _HomePageState extends State<HomePage> {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Logout'),
-          content: const Text('Are you sure you want to logout?'),
+          title: Text(AppConstants.logout),
+          content: Text(AppConstants.confirmLogout),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('No'),
+              child: Text(AppConstants.no),
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Yes'),
+              child: Text(AppConstants.yes),
             ),
           ],
         ),
@@ -537,7 +546,8 @@ class _HomePageState extends State<HomePage> {
         context.router.replaceAll([const LoginRoute()]);
       }
     } catch (e) {
-      AppUtils.showToast(context, 'Logout error: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.logoutError} $e',
+          isError: true);
     }
   }
 
@@ -546,7 +556,8 @@ class _HomePageState extends State<HomePage> {
       _loadUserInfo();
       _loadUserBooking();
     } catch (e) {
-      AppUtils.showToast(context, 'Refresh error: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.refreshError} $e',
+          isError: true);
     }
   }
 

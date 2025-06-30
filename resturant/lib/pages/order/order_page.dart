@@ -47,7 +47,8 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
         context.read<OrderBloc>().add(OrderLoadCurrent(userId: userId));
       }
     } catch (e) {
-      AppUtils.showToast(context, 'Error loading order: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.errorOrder} $e',
+          isError: true);
     }
   }
 
@@ -55,7 +56,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Order Food'),
+        title: Text(AppConstants.orderFood),
         actions: [
           IconButton(
             icon: const Icon(Icons.home),
@@ -63,11 +64,12 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
               try {
                 context.router.replaceAll([HomeRoute()]);
               } catch (e) {
-                AppUtils.showToast(context, 'Navigation error: $e',
+                AppUtils.showToast(
+                    context, '${AppConstants.errorNavigation} $e',
                     isError: true);
               }
             },
-            tooltip: 'Home',
+            tooltip: AppConstants.home,
           ),
         ],
         bottom: TabBar(
@@ -79,7 +81,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                 children: [
                   const Icon(Icons.restaurant_menu),
                   const SizedBox(width: 8),
-                  const Text('Menu'),
+                  Text(AppConstants.menu),
                 ],
               ),
             ),
@@ -89,7 +91,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                 children: [
                   const Icon(Icons.shopping_cart),
                   const SizedBox(width: 8),
-                  const Text('Cart'),
+                  Text(AppConstants.cart),
                   BlocBuilder<OrderBloc, OrderState>(
                     builder: (context, state) {
                       if (state is OrderCartLoaded && state.totalItems > 0) {
@@ -132,7 +134,8 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
               AppUtils.showToast(context, state.message, isError: true);
             }
           } catch (e) {
-            AppUtils.showToast(context, 'Navigation error: $e', isError: true);
+            AppUtils.showToast(context, '${AppConstants.errorNavigation} $e',
+                isError: true);
           }
         },
         child: TabBarView(
@@ -156,7 +159,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
         } else if (state is MenuError) {
           return _buildErrorWidget(state.message);
         } else {
-          return const Center(child: Text('Loading menu...'));
+          return Center(child: Text(AppConstants.loadingMenu));
         }
       },
     );
@@ -189,7 +192,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
             return Padding(
               padding: const EdgeInsets.only(right: 8),
               child: FilterChip(
-                label: const Text('All'),
+                label: Text(AppConstants.all),
                 selected: isSelected,
                 onSelected: (_) {
                   setState(() {
@@ -356,7 +359,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                               );
                         },
                         icon: const Icon(Icons.add, size: 16),
-                        label: const Text('Add'),
+                        label: Text(AppConstants.add),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green,
                           foregroundColor: Colors.white,
@@ -383,7 +386,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
         } else if (state is OrderCartLoaded) {
           return _buildCartContent(state);
         } else {
-          return const Center(child: Text('Loading cart...'));
+          return _buildEmptyHistory();
         }
       },
     );
@@ -408,6 +411,41 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
         ),
         _buildCartSummary(state),
       ],
+    );
+  }
+
+  Widget _buildEmptyHistory() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.receipt_long,
+            size: 64,
+            color: Colors.grey[400],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            AppConstants.noOrdersYet,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  color: Colors.grey[600],
+                ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            AppConstants.noOrdersDescription,
+            style: TextStyle(color: Colors.grey[600]),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            icon: const Icon(Icons.restaurant_menu),
+            label: Text(AppConstants.orderNow),
+          ),
+        ],
+      ),
     );
   }
 
@@ -441,7 +479,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Total: ${AppUtils.formatPriceFromPaise(cartItem.totalPriceInPaise)}',
+                    '${AppConstants.total}: ${AppUtils.formatPriceFromPaise(cartItem.totalPriceInPaise)}',
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -509,14 +547,14 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Total Items: ${state.totalItems}',
+                '${AppConstants.totalItems}: ${state.totalItems}',
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
               Text(
-                'Total: ${AppUtils.formatPriceFromPaise(state.totalAmountInPaise)}',
+                '${AppConstants.total}: ${AppUtils.formatPriceFromPaise(state.totalAmountInPaise)}',
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -533,7 +571,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                   onPressed: () {
                     _showClearCartDialog();
                   },
-                  child: const Text('Clear Cart'),
+                  child: Text(AppConstants.clearCart),
                 ),
               ),
               const SizedBox(width: 16),
@@ -548,8 +586,8 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text(
-                    'Place Order',
+                  child: Text(
+                    AppConstants.placeOrder,
                     style: TextStyle(fontSize: 16),
                   ),
                 ),
@@ -573,14 +611,14 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
           ),
           const SizedBox(height: 16),
           Text(
-            'Your cart is empty',
+            AppConstants.yourCartIsEmpty,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: Colors.grey[600],
                 ),
           ),
           const SizedBox(height: 8),
           Text(
-            'Add some delicious items from the menu',
+            AppConstants.addSomeDeliciousItems,
             style: TextStyle(color: Colors.grey[600]),
           ),
           const SizedBox(height: 16),
@@ -588,7 +626,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
             onPressed: () {
               _tabController.animateTo(0);
             },
-            child: const Text('Browse Menu'),
+            child: Text(AppConstants.browseMenu),
           ),
         ],
       ),
@@ -607,7 +645,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
           ),
           const SizedBox(height: 16),
           Text(
-            'No menu items available',
+            AppConstants.noMenuItemsAvailable,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: Colors.grey[600],
                 ),
@@ -617,7 +655,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
             onPressed: () {
               context.read<MenuBloc>().add(MenuRefreshRequested());
             },
-            child: const Text('Refresh'),
+            child: Text(AppConstants.refresh),
           ),
         ],
       ),
@@ -636,7 +674,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
           ),
           const SizedBox(height: 16),
           Text(
-            'Error Loading Menu',
+            AppConstants.errorLoadingMenu,
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 8),
@@ -650,7 +688,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
             onPressed: () {
               context.read<MenuBloc>().add(MenuLoadRequested());
             },
-            child: const Text('Retry'),
+            child: Text(AppConstants.retry),
           ),
         ],
       ),
@@ -676,20 +714,19 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Clear Cart'),
-        content: const Text(
-            'Are you sure you want to clear all items from your cart?'),
+        title: Text(AppConstants.clearCart),
+        content: Text(AppConstants.confirmClearCart),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Cancel'),
+            child: Text(AppConstants.cancel),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
               context.read<OrderBloc>().add(OrderClearCart());
             },
-            child: const Text('Clear'),
+            child: Text(AppConstants.clear),
           ),
         ],
       ),
@@ -702,7 +739,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
       final userId = await authBloc.getCurrentUserId();
 
       if (userId == null) {
-        AppUtils.showToast(context, 'User not logged in', isError: true);
+        AppUtils.showToast(context, AppConstants.userNotLogin, isError: true);
         return;
       }
 
@@ -719,7 +756,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
         final confirmed = await showDialog<bool>(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('Confirm Order'),
+            title: Text(AppConstants.confirmOrder),
             content: BlocBuilder<OrderBloc, OrderState>(
               builder: (context, state) {
                 if (state is OrderCartLoaded) {
@@ -727,26 +764,26 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Table: ${booking['table_name']}'),
-                      Text('Items: ${state.totalItems}'),
+                      Text('${AppConstants.table}: ${booking['table_name']}'),
+                      Text('${AppConstants.items}: ${state.totalItems}'),
                       Text(
-                          'Total: ${AppUtils.formatPriceFromPaise(state.totalAmountInPaise)}'),
+                          '${AppConstants.total}: ${AppUtils.formatPriceFromPaise(state.totalAmountInPaise)}'),
                       const SizedBox(height: 8),
-                      const Text('Proceed with the order?'),
+                      Text(AppConstants.proceedWithOrder),
                     ],
                   );
                 }
-                return const Text('Proceed with the order?');
+                return Text(AppConstants.proceedWithOrder);
               },
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(false),
-                child: const Text('Cancel'),
+                child: Text(AppConstants.cancel),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(true),
-                child: const Text('Place Order'),
+                child: Text(AppConstants.placeOrder),
               ),
             ],
           ),
@@ -765,7 +802,8 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
             isError: true);
       }
     } catch (e) {
-      AppUtils.showToast(context, 'Order error: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.errorOrder} $e',
+          isError: true);
     }
   }
 
@@ -778,16 +816,16 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
           children: [
             Icon(Icons.check_circle, color: Colors.green, size: 28),
             const SizedBox(width: 8),
-            const Text('Order Placed!'),
+            Text(AppConstants.orderPlaced),
           ],
         ),
-        content: const Column(
+        content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Your order has been placed successfully.'),
+            Text(AppConstants.orderPlacedMessage),
             SizedBox(height: 8),
-            Text('You can track your order in the Order History.'),
+            Text(AppConstants.trackOrderMessage),
           ],
         ),
         actions: [
@@ -795,7 +833,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text('Continue Ordering'),
+            child: Text(AppConstants.continueOrdering),
           ),
           ElevatedButton(
             onPressed: () {
@@ -803,11 +841,12 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
               try {
                 context.router.push(const OrderHistoryRoute());
               } catch (e) {
-                AppUtils.showToast(context, 'Navigation error: $e',
+                AppUtils.showToast(
+                    context, '${AppConstants.errorNavigation} $e',
                     isError: true);
               }
             },
-            child: const Text('View Order'),
+            child: Text(AppConstants.viewOrder),
           ),
         ],
       ),

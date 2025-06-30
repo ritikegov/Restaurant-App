@@ -30,7 +30,7 @@ class _BookingPageState extends State<BookingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Book a Table'),
+        title: const Text(AppConstants.bookingTable),
         actions: [
           IconButton(
             icon: const Icon(Icons.home),
@@ -38,11 +38,12 @@ class _BookingPageState extends State<BookingPage> {
               try {
                 context.router.replaceAll([HomeRoute()]);
               } catch (e) {
-                AppUtils.showToast(context, 'Navigation error: $e',
+                AppUtils.showToast(
+                    context, '${AppConstants.errorNavigation} $e',
                     isError: true);
               }
             },
-            tooltip: 'Home',
+            tooltip: AppConstants.home,
           ),
         ],
       ),
@@ -56,7 +57,8 @@ class _BookingPageState extends State<BookingPage> {
               AppUtils.showToast(context, state.message, isError: true);
             }
           } catch (e) {
-            AppUtils.showToast(context, 'Navigation error: $e', isError: true);
+            AppUtils.showToast(context, '${AppConstants.errorNavigation} $e',
+                isError: true);
           }
         },
         child: SafeArea(
@@ -79,7 +81,7 @@ class _BookingPageState extends State<BookingPage> {
                         Icon(Icons.info_outline, color: Colors.blue[700]),
                         const SizedBox(width: 8),
                         Text(
-                          'Booking Information',
+                          AppConstants.bookingTableInfo,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -89,13 +91,8 @@ class _BookingPageState extends State<BookingPage> {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    const Text('• You can book only one seat at a time'),
-                    const Text(
-                        '• Multiple people can book the same table if seats are available'),
-                    const Text(
-                        '• You can book again after 23 hours from your last booking'),
-                    const Text(
-                        '• Please check-in within 30 minutes of booking'),
+                    const Text(AppConstants.bookingTableInfoMessage_1),
+                    const Text(AppConstants.bookingTableInfoMessage_2),
                   ],
                 ),
               ),
@@ -117,7 +114,8 @@ class _BookingPageState extends State<BookingPage> {
                     } else if (state is TableError) {
                       return _buildErrorWidget(state.message);
                     } else {
-                      return const Center(child: Text('Loading tables...'));
+                      return const Center(
+                          child: Text(AppConstants.loadingState));
                     }
                   },
                 ),
@@ -150,8 +148,8 @@ class _BookingPageState extends State<BookingPage> {
                             )
                           : Text(
                               _selectedTable != null
-                                  ? 'Book ${_selectedTable!.name}'
-                                  : 'Select a Table',
+                                  ? '${AppConstants.booking} ${_selectedTable!.name}'
+                                  : AppConstants.bookingSelectTable,
                               style: const TextStyle(fontSize: 16),
                             ),
                     );
@@ -172,7 +170,7 @@ class _BookingPageState extends State<BookingPage> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Text(
-            'Available Tables (${availableTables.length})',
+            '${AppConstants.bookingAvailableTable} (${availableTables.length})',
             style: const TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -251,7 +249,7 @@ class _BookingPageState extends State<BookingPage> {
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        'Total Capacity: ${table.totalCapacity} seats',
+                        '${AppConstants.bookingTableCapacity} ${table.totalCapacity} ${AppConstants.seat}',
                         style: const TextStyle(fontSize: 14),
                       ),
                       Text(
@@ -281,7 +279,7 @@ class _BookingPageState extends State<BookingPage> {
         margin: const EdgeInsets.only(bottom: 12),
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Text('Error displaying table: $e'),
+          child: Text('${AppConstants.errorDisplayTable} $e'),
         ),
       );
     }
@@ -299,14 +297,14 @@ class _BookingPageState extends State<BookingPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            'No Tables Available',
+            AppConstants.noTableAvailable,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                   color: Colors.grey[600],
                 ),
           ),
           const SizedBox(height: 8),
           Text(
-            'All tables are currently full. Please try again later.',
+            AppConstants.noTableAvailableDescription,
             textAlign: TextAlign.center,
             style: TextStyle(color: Colors.grey[600]),
           ),
@@ -315,7 +313,7 @@ class _BookingPageState extends State<BookingPage> {
             onPressed: () {
               context.read<TableBloc>().add(TableRefreshRequested());
             },
-            child: const Text('Refresh'),
+            child: const Text(AppConstants.refresh),
           ),
         ],
       ),
@@ -334,7 +332,7 @@ class _BookingPageState extends State<BookingPage> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Error Loading Tables',
+            AppConstants.errorTableLoading,
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 8),
@@ -348,7 +346,7 @@ class _BookingPageState extends State<BookingPage> {
             onPressed: () {
               context.read<TableBloc>().add(TableLoadRequested());
             },
-            child: const Text('Retry'),
+            child: const Text(AppConstants.retry),
           ),
         ],
       ),
@@ -363,32 +361,31 @@ class _BookingPageState extends State<BookingPage> {
       final userId = await authBloc.getCurrentUserId();
 
       if (userId == null) {
-        AppUtils.showToast(context, 'User not logged in', isError: true);
+        AppUtils.showToast(context, AppConstants.userNotLogin, isError: true);
         return;
       }
 
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Confirm Booking'),
+          title: const Text(AppConstants.confirmBooking),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Book ${_selectedTable!.name}?'),
+              Text('Book ${_selectedTable!.name}'),
               const SizedBox(height: 8),
-              const Text(
-                  'Note: You will have 30 minutes to check-in after booking.'),
+              const Text(AppConstants.bookingDescription),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: const Text(AppConstants.cancel),
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('Book Now'),
+              child: const Text(AppConstants.bookingNow),
             ),
           ],
         ),
@@ -403,7 +400,8 @@ class _BookingPageState extends State<BookingPage> {
             );
       }
     } catch (e) {
-      AppUtils.showToast(context, 'Booking error: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.errorBooking} $e',
+          isError: true);
     }
   }
 }

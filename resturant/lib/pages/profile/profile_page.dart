@@ -44,7 +44,8 @@ class _ProfilePageState extends State<ProfilePage> {
         context.read<OrderBloc>().add(OrderLoadHistory(userId: userId));
       }
     } catch (e) {
-      AppUtils.showToast(context, 'Error loading user info: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.errorLoadingUserInfo} $e',
+          isError: true);
     }
   }
 
@@ -52,7 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text(AppConstants.profile),
         actions: [
           IconButton(
             icon: const Icon(Icons.home),
@@ -60,11 +61,12 @@ class _ProfilePageState extends State<ProfilePage> {
               try {
                 context.router.replaceAll([HomeRoute()]);
               } catch (e) {
-                AppUtils.showToast(context, 'Navigation error: $e',
+                AppUtils.showToast(
+                    context, '${AppConstants.errorNavigation} $e',
                     isError: true);
               }
             },
-            tooltip: 'Home',
+            tooltip: AppConstants.home,
           ),
         ],
       ),
@@ -100,12 +102,12 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           const SizedBox(height: 16),
           Text(
-            _username ?? 'User',
+            _username ?? AppConstants.user,
             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
           Text(
-            'Member since ${_getJoinDate()}',
+            '${AppConstants.memberSince} ${_getJoinDate()}',
             style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
         ],
@@ -115,65 +117,22 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget _buildQuickActions() {
     return Card(
+      margin: EdgeInsets.fromLTRB(3.0, 80.0, 0.0, 0.0),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Quick Actions',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              AppConstants.quickActions,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-            ListTile(
-              leading: const Icon(Icons.event_seat, color: Colors.green),
-              title: const Text('Book a Table'),
-              subtitle: const Text('Reserve your table now'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                try {
-                  context.router.push(const BookingRoute());
-                } catch (e) {
-                  AppUtils.showToast(context, 'Navigation error: $e',
-                      isError: true);
-                }
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.restaurant_menu, color: Colors.orange),
-              title: const Text('Browse Menu'),
-              subtitle: const Text('See our delicious offerings'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                try {
-                  context.router.push(const MenuRoute());
-                } catch (e) {
-                  AppUtils.showToast(context, 'Navigation error: $e',
-                      isError: true);
-                }
-              },
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.history, color: Colors.purple),
-              title: const Text('Order History'),
-              subtitle: const Text('View your past orders'),
-              trailing: const Icon(Icons.arrow_forward_ios),
-              onTap: () {
-                try {
-                  context.router.push(const OrderHistoryRoute());
-                } catch (e) {
-                  AppUtils.showToast(context, 'Navigation error: $e',
-                      isError: true);
-                }
-              },
-            ),
             const Divider(),
             ListTile(
               leading: const Icon(Icons.logout, color: Colors.red),
-              title: const Text('Logout'),
-              subtitle: const Text('Sign out of your account'),
+              title: Text(AppConstants.logout),
+              subtitle: Text(AppConstants.signOutOfYourAccount),
               trailing: const Icon(Icons.arrow_forward_ios),
               onTap: _handleLogout,
             ),
@@ -190,9 +149,9 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Recent Activity',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            Text(
+              AppConstants.recentActivity,
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
             BlocBuilder<OrderBloc, OrderState>(
@@ -206,18 +165,18 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Icon(Icons.restaurant, color: Colors.green[700]),
                     ),
                     title: Text(
-                        'Last Order: ${AppUtils.formatPriceFromPaise(recentOrder.totalAmountInPaise)}'),
+                        '${AppConstants.lastOrder} ${AppUtils.formatPriceFromPaise(recentOrder.totalAmountInPaise)}'),
                     subtitle: Text(
                         '${AppUtils.formatEpochToIST(recentOrder.orderTimeEpoch)} '),
                   );
                 }
-                return const ListTile(
-                  leading: CircleAvatar(
+                return ListTile(
+                  leading: const CircleAvatar(
                     backgroundColor: Colors.grey,
                     child: Icon(Icons.restaurant, color: Colors.white),
                   ),
-                  title: Text('No orders yet'),
-                  subtitle: Text('Place your first order'),
+                  title: Text(AppConstants.noOrdersYetProfile),
+                  subtitle: Text(AppConstants.placeYourFirstOrder),
                 );
               },
             ),
@@ -228,7 +187,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   String _getJoinDate() {
-    return 'Today';
+    return AppConstants.today;
   }
 
   void _handleLogout() async {
@@ -236,18 +195,18 @@ class _ProfilePageState extends State<ProfilePage> {
       final confirmed = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text('Logout'),
-          content: const Text('Are you sure you want to logout?'),
+          title: Text(AppConstants.logout),
+          content: Text(AppConstants.confirmLogout),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('Cancel'),
+              child: Text(AppConstants.cancel),
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(true),
               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-              child:
-                  const Text('Logout', style: TextStyle(color: Colors.white)),
+              child: Text(AppConstants.logout,
+                  style: const TextStyle(color: Colors.white)),
             ),
           ],
         ),
@@ -258,7 +217,8 @@ class _ProfilePageState extends State<ProfilePage> {
         context.router.replaceAll([const LoginRoute()]);
       }
     } catch (e) {
-      AppUtils.showToast(context, 'Logout error: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.logoutError} $e',
+          isError: true);
     }
   }
 
@@ -266,7 +226,8 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       _loadUserInfo();
     } catch (e) {
-      AppUtils.showToast(context, 'Refresh error: $e', isError: true);
+      AppUtils.showToast(context, '${AppConstants.refreshError} $e',
+          isError: true);
     }
   }
 }
