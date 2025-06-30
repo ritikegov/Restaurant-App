@@ -27,7 +27,6 @@ class DatabaseHelper {
         path,
         version: AppConstants.databaseVersion,
         onCreate: _onCreate,
-        onUpgrade: _onUpgrade,
       );
     } catch (e) {
       throw Exception('Failed to initialize database: $e');
@@ -106,17 +105,6 @@ class DatabaseHelper {
       await _insertInitialData(db);
     } catch (e) {
       throw Exception('Failed to create database tables: $e');
-    }
-  }
-
-  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    try {
-      // Handle database upgrades here if needed in future
-      if (oldVersion < 2) {
-        // Example: ALTER TABLE statements for version 2
-      }
-    } catch (e) {
-      throw Exception('Failed to upgrade database: $e');
     }
   }
 
@@ -224,24 +212,6 @@ class DatabaseHelper {
     }
   }
 
-  Future<int> rawUpdate(String sql, [List<dynamic>? arguments]) async {
-    try {
-      final db = await database;
-      return await db.rawUpdate(sql, arguments);
-    } catch (e) {
-      throw Exception('Failed to execute raw update: $e');
-    }
-  }
-
-  Future<int> rawDelete(String sql, [List<dynamic>? arguments]) async {
-    try {
-      final db = await database;
-      return await db.rawDelete(sql, arguments);
-    } catch (e) {
-      throw Exception('Failed to execute raw delete: $e');
-    }
-  }
-
   Future<void> close() async {
     try {
       final db = await database;
@@ -249,23 +219,6 @@ class DatabaseHelper {
       _database = null;
     } catch (e) {
       throw Exception('Failed to close database: $e');
-    }
-  }
-
-  Future<void> resetDatabase() async {
-    try {
-      final databasesPath = await getDatabasesPath();
-      final path = join(databasesPath, AppConstants.databaseName);
-
-      if (_database != null) {
-        await _database!.close();
-        _database = null;
-      }
-      await deleteDatabase(path);
-
-      _database = await _initDatabase();
-    } catch (e) {
-      throw Exception('Failed to reset database: $e');
     }
   }
 }

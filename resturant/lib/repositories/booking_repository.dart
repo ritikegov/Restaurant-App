@@ -271,34 +271,6 @@ class BookingRepository {
     }
   }
 
-  Future<List<BookingModel>> getBookingsByTableId(int tableId) async {
-    try {
-      final result = await _databaseHelper.query(
-        AppConstants.bookingsTable,
-        where: 'table_id = ?',
-        whereArgs: [tableId],
-        orderBy: 'booking_time_epoch DESC',
-      );
-
-      return result.map((map) => BookingModel.fromMap(map)).toList();
-    } catch (e) {
-      throw Exception('Failed to get bookings by table ID: $e');
-    }
-  }
-
-  Future<List<BookingModel>> getAllBookings() async {
-    try {
-      final result = await _databaseHelper.query(
-        AppConstants.bookingsTable,
-        orderBy: 'booking_time_epoch DESC',
-      );
-
-      return result.map((map) => BookingModel.fromMap(map)).toList();
-    } catch (e) {
-      throw Exception('Failed to get all bookings: $e');
-    }
-  }
-
   Future<void> handleExpiredBookings() async {
     try {
       final activeBookings = await _databaseHelper.query(

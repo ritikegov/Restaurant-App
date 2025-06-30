@@ -4,15 +4,10 @@ class AppConstants {
   static const int totalTables = 8;
   static const int seatsPerTable = 4;
 
-  static const int bookingDurationHours = 23;
   static const int checkinTimeoutMinutes = 30;
-  static const int noShowTimeoutMinutes = 15;
 
   static const String currencySymbol = '₹';
-  static const String currencyCode = 'INR';
   static const String exclamation = '!';
-
-  static const String timeZone = 'Asia/Kolkata';
 
   static const Color tableAvailableColor = Colors.green;
   static const Color tablePartiallyBookedColor = Colors.orange;
@@ -55,7 +50,7 @@ class AppConstants {
       'Already have an account? Login';
   static const String passwordNotMatch = 'Passwords do not match';
 
-  static const String appName = 'Restaurant App';
+  static const String appName = 'Mezbaan';
 
   static const String errorUserExists = 'User already exists';
   static const String errorInvalidCredentials = 'Invalid username or password';
@@ -79,6 +74,8 @@ class AppConstants {
   static const String errorBooking = 'Booking error:';
   static const String errorUserLoading = 'Error loading user info:';
   static const String errorBookingLoading = 'Error loading booking:';
+
+  static const int noShowTimeoutMinutes = 15;
 
   static const String createAccount = 'Create Account';
   static const String singupMessage = 'Don\'t have an account? Sign up';

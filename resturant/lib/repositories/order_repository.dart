@@ -97,36 +97,6 @@ class OrderRepository {
     }
   }
 
-  Future<Map<String, dynamic>?> getOrderWithDetails(int orderId) async {
-    try {
-      final result = await _databaseHelper.rawQuery('''
-        SELECT o.*, t.name as table_name, u.username
-        FROM ${AppConstants.ordersTable} o
-        JOIN ${AppConstants.tablesTable} t ON o.table_id = t.id
-        JOIN ${AppConstants.usersTable} u ON o.user_id = u.id
-        WHERE o.id = ?
-      ''', [orderId]);
-
-      if (result.isNotEmpty) {
-        final orderData = Map<String, dynamic>.from(result.first);
-        final itemsResult = await _databaseHelper.rawQuery('''
-          SELECT oi.*, mi.name as item_name, mi.description as item_description
-          FROM ${AppConstants.orderItemsTable} oi
-          JOIN ${AppConstants.menuItemsTable} mi ON oi.menu_item_id = mi.id
-          WHERE oi.order_id = ?
-          ORDER BY oi.id ASC
-        ''', [orderId]);
-
-        orderData['items'] = itemsResult;
-        return orderData;
-      }
-
-      return null;
-    } catch (e) {
-      throw Exception('Failed to get order with details: $e');
-    }
-  }
-
   Future<bool> updateOrderStatus(int orderId, String status) async {
     try {
       final result = await _databaseHelper.update(
@@ -200,55 +170,6 @@ class OrderRepository {
     }
   }
 
-  Future<Map<String, dynamic>> getOrderStatistics(int userId) async {
-    try {
-      final result = await _databaseHelper.rawQuery('''
-        SELECT 
-          COUNT(*) as total_orders,
-          SUM(total_amount_in_paise) as total_spent,
-          AVG(total_amount_in_paise) as average_order_value,
-          MAX(order_time_epoch) as last_order_time
-        FROM ${AppConstants.ordersTable}
-        WHERE user_id = ?
-      ''', [userId]);
-
-      if (result.isNotEmpty) {
-        final data = result.first;
-        return {
-          'totalOrders': AppUtils.safeParseInt(data['total_orders']),
-          'totalSpent': AppUtils.safeParseInt(data['total_spent']),
-          'averageOrderValue':
-              AppUtils.safeParseInt(data['average_order_value']),
-          'lastOrderTime': AppUtils.safeParseInt(data['last_order_time']),
-        };
-      }
-
-      return {
-        'totalOrders': 0,
-        'totalSpent': 0,
-        'averageOrderValue': 0,
-        'lastOrderTime': 0,
-      };
-    } catch (e) {
-      throw Exception('Failed to get order statistics: $e');
-    }
-  }
-
-  Future<List<OrderModel>> getOrdersByStatus(String status) async {
-    try {
-      final result = await _databaseHelper.query(
-        AppConstants.ordersTable,
-        where: 'status = ?',
-        whereArgs: [status],
-        orderBy: 'order_time_epoch DESC',
-      );
-
-      return result.map((map) => OrderModel.fromMap(map)).toList();
-    } catch (e) {
-      throw Exception('Failed to get orders by status: $e');
-    }
-  }
-
   Future<List<OrderModel>> getRecentOrders(int userId, {int limit = 10}) async {
     try {
       final result = await _databaseHelper.query(
@@ -277,19 +198,6 @@ class OrderRepository {
       return result.isNotEmpty;
     } catch (e) {
       throw Exception('Failed to check order eligibility: $e');
-    }
-  }
-
-  Future<List<OrderModel>> getAllOrders() async {
-    try {
-      final result = await _databaseHelper.query(
-        AppConstants.ordersTable,
-        orderBy: 'order_time_epoch DESC',
-      );
-
-      return result.map((map) => OrderModel.fromMap(map)).toList();
-    } catch (e) {
-      throw Exception('Failed to get all orders: $e');
     }
   }
 }
