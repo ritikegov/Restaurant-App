@@ -215,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                         icon: const Icon(Icons.logout, size: 16),
                         label: Text(AppConstants.checkout),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
+                          backgroundColor: Color.fromARGB(255, 251, 109, 99),
                           foregroundColor: Colors.white,
                         ),
                       ),
@@ -474,7 +474,8 @@ class _HomePageState extends State<HomePage> {
                 ),
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(true),
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromARGB(245, 247, 136, 38)),
                   child: Text(AppConstants.yesCheckout,
                       style: TextStyle(color: Colors.white)),
                 ),
