@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_app/core/constants.dart';
 import '../models/order_model.dart';
 import '../models/menu_item_model.dart';
 import '../repositories/order_repository.dart';
@@ -141,7 +142,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         totalAmountInPaise: totalAmount,
       ));
     } catch (e) {
-      emit(OrderError(message: 'Failed to load cart: ${e.toString()}'));
+      emit(OrderError(
+          message: '${AppConstants.failedToLoadCart} ${e.toString()}'));
     }
   }
 
@@ -169,7 +171,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         totalAmountInPaise: totalAmount,
       ));
     } catch (e) {
-      emit(OrderError(message: 'Failed to add item: ${e.toString()}'));
+      emit(OrderError(message: '${AppConstants.failedToAdd} ${e.toString()}'));
     }
   }
 
@@ -184,7 +186,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         totalAmountInPaise: totalAmount,
       ));
     } catch (e) {
-      emit(OrderError(message: 'Failed to remove item: ${e.toString()}'));
+      emit(OrderError(
+          message: '${AppConstants.filedToRemoveItems} ${e.toString()}'));
     }
   }
 
@@ -210,7 +213,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         totalAmountInPaise: totalAmount,
       ));
     } catch (e) {
-      emit(OrderError(message: 'Failed to update quantity: ${e.toString()}'));
+      emit(OrderError(
+          message: '${AppConstants.failedToUpdateItems} ${e.toString()}'));
     }
   }
 
@@ -223,7 +227,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         totalAmountInPaise: 0,
       ));
     } catch (e) {
-      emit(OrderError(message: 'Failed to clear cart: ${e.toString()}'));
+      emit(OrderError(
+          message: '${AppConstants.failedToClearCart} ${e.toString()}'));
     }
   }
 
@@ -233,13 +238,13 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       emit(OrderLoading());
 
       if (_cartItems.isEmpty) {
-        emit(OrderError(message: 'Cart is empty'));
+        emit(OrderError(message: AppConstants.cartEmpty));
         return;
       }
 
       final canOrder = await _orderRepository.canUserPlaceOrder(event.userId);
       if (!canOrder) {
-        emit(OrderError(message: 'You must check-in to place an order'));
+        emit(OrderError(message: AppConstants.checkinFirstMessage));
         return;
       }
 
@@ -261,11 +266,11 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       if (order != null) {
         _cartItems.clear();
         emit(OrderSuccess(
-          message: 'Order placed successfully!',
+          message: AppConstants.orderSuccessMessage,
           order: order,
         ));
       } else {
-        emit(OrderError(message: 'Failed to place order'));
+        emit(OrderError(message: AppConstants.orderFailedMessage));
       }
     } catch (e) {
       emit(OrderError(message: e.toString()));
@@ -286,8 +291,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         currentOrder: currentOrder,
       ));
     } catch (e) {
-      emit(
-          OrderError(message: 'Failed to load order history: ${e.toString()}'));
+      emit(OrderError(
+          message: '${AppConstants.failedToLoadOrderHistory} ${e.toString()}'));
     }
   }
 
@@ -304,8 +309,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
         currentOrder: currentOrder,
       ));
     } catch (e) {
-      emit(
-          OrderError(message: 'Failed to load current order: ${e.toString()}'));
+      emit(OrderError(
+          message: '${AppConstants.failedtoLoadCurrentOrder} ${e.toString()}'));
     }
   }
 
@@ -318,11 +323,11 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
           await _orderRepository.cancelOrder(event.orderId, event.userId);
 
       if (success) {
-        emit(OrderSuccess(message: 'Order cancelled successfully'));
+        emit(OrderSuccess(message: AppConstants.orderCancelSuccessMessage));
 
         add(OrderLoadHistory(userId: event.userId));
       } else {
-        emit(OrderError(message: 'Failed to cancel order'));
+        emit(OrderError(message: AppConstants.errorCancelOrder));
       }
     } catch (e) {
       emit(OrderError(message: e.toString()));
@@ -336,9 +341,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
           await _orderRepository.updateOrderStatus(event.orderId, event.status);
 
       if (success) {
-        emit(OrderSuccess(message: 'Order status updated'));
+        emit(OrderSuccess(message: AppConstants.orderStatusUpdate));
       } else {
-        emit(OrderError(message: 'Failed to update order status'));
+        emit(OrderError(message: AppConstants.failedToUpdateOrderStatus));
       }
     } catch (e) {
       emit(OrderError(message: e.toString()));

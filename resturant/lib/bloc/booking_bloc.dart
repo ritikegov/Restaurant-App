@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_app/core/constants.dart';
 import '../models/booking_model.dart';
 import '../repositories/booking_repository.dart';
 
@@ -107,13 +108,13 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
 
       if (booking != null) {
         emit(BookingSuccess(
-          message: 'Table booked successfully!',
+          message: AppConstants.tableSuccessMessage,
           booking: booking,
         ));
 
         add(BookingLoadUserBooking(userId: event.userId));
       } else {
-        emit(BookingError(message: 'Failed to create booking'));
+        emit(BookingError(message: AppConstants.errorCreateBooking));
       }
     } catch (e) {
       emit(BookingError(message: e.toString()));
@@ -129,11 +130,11 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           await _bookingRepository.cancelBooking(event.bookingId, event.userId);
 
       if (success) {
-        emit(BookingSuccess(message: 'Booking cancelled successfully!'));
+        emit(BookingSuccess(message: AppConstants.bookingCancelMessage));
 
         add(BookingLoadUserBooking(userId: event.userId));
       } else {
-        emit(BookingError(message: 'Failed to cancel booking'));
+        emit(BookingError(message: AppConstants.errorBookingCancel));
       }
     } catch (e) {
       emit(BookingError(message: e.toString()));
@@ -149,11 +150,11 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           event.bookingId, event.userId);
 
       if (success) {
-        emit(BookingSuccess(message: 'Checked in successfully!'));
+        emit(BookingSuccess(message: AppConstants.checkinSuccessMessage));
 
         add(BookingLoadUserBooking(userId: event.userId));
       } else {
-        emit(BookingError(message: 'Failed to check in'));
+        emit(BookingError(message: AppConstants.errorCheckinMessage));
       }
     } catch (e) {
       emit(BookingError(message: e.toString()));
@@ -172,11 +173,11 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       );
 
       if (success) {
-        emit(BookingSuccess(message: 'Booking modified successfully!'));
+        emit(BookingSuccess(message: AppConstants.bookingModifiedMessage));
 
         add(BookingLoadUserBooking(userId: event.userId));
       } else {
-        emit(BookingError(message: 'Failed to modify booking'));
+        emit(BookingError(message: AppConstants.errorBookingModified));
       }
     } catch (e) {
       emit(BookingError(message: e.toString()));
@@ -192,11 +193,11 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
           event.bookingId, event.userId);
 
       if (success) {
-        emit(BookingSuccess(message: 'Checked out successfully!'));
+        emit(BookingSuccess(message: AppConstants.checkoutSuccessMessage));
 
         add(BookingLoadUserBooking(userId: event.userId));
       } else {
-        emit(BookingError(message: 'Failed to checkout'));
+        emit(BookingError(message: AppConstants.errorCheckoutMessage));
       }
     } catch (e) {
       emit(BookingError(message: e.toString()));
@@ -224,7 +225,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       ));
     } catch (e) {
       emit(BookingError(
-          message: 'Failed to load user booking: ${e.toString()}'));
+          message: '${AppConstants.failedUserLoad} ${e.toString()}'));
     }
   }
 
@@ -239,7 +240,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
       emit(BookingLoaded(bookings: bookings));
     } catch (e) {
       emit(BookingError(
-          message: 'Failed to load booking history: ${e.toString()}'));
+          message: '${AppConstants.failedUserHistoryLoad} ${e.toString()}'));
     }
   }
 

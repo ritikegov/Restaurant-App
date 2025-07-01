@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_app/core/constants.dart';
 import '../models/table_model.dart';
 import '../repositories/table_repository.dart';
 
@@ -50,7 +51,8 @@ class TableBloc extends Bloc<TableEvent, TableState> {
       final tables = await _tableRepository.getAllTables();
       emit(TableLoaded(tables: tables));
     } catch (e) {
-      emit(TableError(message: 'Failed to load tables: ${e.toString()}'));
+      emit(TableError(
+          message: '${AppConstants.failedToLoadTable} ${e.toString()}'));
     }
   }
 
@@ -60,7 +62,8 @@ class TableBloc extends Bloc<TableEvent, TableState> {
       final tables = await _tableRepository.getAllTables();
       emit(TableLoaded(tables: tables));
     } catch (e) {
-      emit(TableError(message: 'Failed to refresh tables: ${e.toString()}'));
+      emit(TableError(
+          message: '${AppConstants.failedToRefreshTable} ${e.toString()}'));
     }
   }
 
@@ -74,7 +77,7 @@ class TableBloc extends Bloc<TableEvent, TableState> {
       emit(TableLoaded(tables: tables));
     } catch (e) {
       emit(TableError(
-          message: 'Failed to update table availability: ${e.toString()}'));
+          message: '${AppConstants.failedToUpdateTable} ${e.toString()}'));
     }
   }
 

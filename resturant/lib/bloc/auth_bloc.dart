@@ -92,7 +92,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthError(message: AppConstants.errorInvalidCredentials));
       }
     } catch (e) {
-      emit(AuthError(message: 'Login failed: ${e.toString()}'));
+      emit(AuthError(message: '${AppConstants.loginFailed} ${e.toString()}'));
     }
   }
 
@@ -119,13 +119,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (user != null) {
         emit(AuthSignupSuccess(message: AppConstants.successUserCreated));
       } else {
-        emit(AuthError(message: 'Failed to create user'));
+        emit(AuthError(message: AppConstants.errorCreateUserFailed));
       }
     } catch (e) {
       if (e.toString().contains(AppConstants.errorUserExists)) {
         emit(AuthError(message: AppConstants.errorUserExists));
       } else {
-        emit(AuthError(message: 'Signup failed: ${e.toString()}'));
+        emit(
+            AuthError(message: '${AppConstants.signUpFailed} ${e.toString()}'));
       }
     }
   }
@@ -137,7 +138,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await _clearUserSession();
       emit(AuthUnauthenticated());
     } catch (e) {
-      emit(AuthError(message: 'Logout failed: ${e.toString()}'));
+      emit(AuthError(message: '${AppConstants.logoutFailed} ${e.toString()}'));
     }
   }
 
@@ -174,7 +175,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await prefs.setInt(AppConstants.prefKeyUserId, user.id!);
       await prefs.setString(AppConstants.prefKeyUsername, user.username);
     } catch (e) {
-      throw Exception('Failed to save user session: $e');
+      throw Exception('${AppConstants.failedToSaveSession} $e');
     }
   }
 
@@ -185,7 +186,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       await prefs.remove(AppConstants.prefKeyUserId);
       await prefs.remove(AppConstants.prefKeyUsername);
     } catch (e) {
-      throw Exception('Failed to clear user session: $e');
+      throw Exception('${AppConstants.failedToClearSession} $e');
     }
   }
 
