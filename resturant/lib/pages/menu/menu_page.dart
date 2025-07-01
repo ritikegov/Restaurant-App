@@ -111,9 +111,9 @@ class _MenuPageState extends State<MenuPage> {
                   });
                   context.read<MenuBloc>().add(MenuFilterByCategory());
                 },
-                backgroundColor: Colors.grey[200],
+                backgroundColor: Color.fromARGB(245, 247, 136, 38),
                 selectedColor: Colors.blue[100],
-                checkmarkColor: Colors.blue,
+                checkmarkColor: Color(0xFF001F54),
               ),
             );
           }
@@ -135,8 +135,8 @@ class _MenuPageState extends State<MenuPage> {
                     .add(MenuFilterByCategory(category: category));
               },
               backgroundColor: Colors.grey[200],
-              selectedColor: Colors.blue[100],
-              checkmarkColor: Colors.blue,
+              selectedColor: Color.fromARGB(245, 247, 136, 38),
+              checkmarkColor: Color(0xFF001F54),
             ),
           );
         },
@@ -178,7 +178,7 @@ class _MenuPageState extends State<MenuPage> {
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.blue,
+                color: Color(0xFF001F54),
               ),
             ),
           ),
@@ -211,11 +211,11 @@ class _MenuPageState extends State<MenuPage> {
                 decoration: BoxDecoration(
                   color: Colors.blue[50],
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.blue[200]!),
+                  border: Border.all(color: Color(0xFF001F54)!),
                 ),
                 child: Icon(
                   _getCategoryIcon(item.category),
-                  color: Colors.blue,
+                  color: Color(0xFF001F54),
                   size: 32,
                 ),
               ),
@@ -259,8 +259,8 @@ class _MenuPageState extends State<MenuPage> {
                             item.category,
                             style: const TextStyle(fontSize: 12),
                           ),
-                          backgroundColor: Colors.blue[100],
-                          labelStyle: TextStyle(color: Colors.blue[700]),
+                          backgroundColor: Color.fromARGB(245, 247, 136, 38),
+                          labelStyle: TextStyle(color: Color(0xFF001F54)),
                         ),
                       ],
                     ),

@@ -55,10 +55,9 @@ class _SignupPageState extends State<SignupPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Icon(
-                    Icons.person_add,
-                    size: 80,
-                    color: Colors.blue,
+                  Image.asset(
+                    'assets/images/user_signup.png',
+                    height: 140,
                   ),
                   const SizedBox(height: 16),
                   const Text(
@@ -67,7 +66,7 @@ class _SignupPageState extends State<SignupPage> {
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
-                      color: Colors.blue,
+                      color: Color(0xFF001F54),
                     ),
                   ),
                   const SizedBox(height: 32),

@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
     try {
       return Card(
         margin: const EdgeInsets.only(bottom: 16),
-        color: Colors.blue[50],
+        color: Color.fromARGB(245, 249, 171, 103),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -119,14 +119,14 @@ class _HomePageState extends State<HomePage> {
             children: [
               Row(
                 children: [
-                  Icon(Icons.event_seat, color: Colors.blue[700]),
+                  Icon(Icons.event_seat, color: Color(0xFF001F54)),
                   const SizedBox(width: 8),
                   Text(
                     AppConstants.currentBooking,
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.blue[700],
+                      color: Color(0xFF001F54),
                     ),
                   ),
                   const Spacer(),
@@ -150,8 +150,12 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 8),
               Text(
+                  style: TextStyle(
+                      fontWeight: FontWeight.normal, color: Color(0xFF001F54)),
                   '${AppConstants.table}: ${booking['table_name'] ?? AppConstants.unknown}'),
               Text(
+                  style: TextStyle(
+                      fontWeight: FontWeight.normal, color: Color(0xFF001F54)),
                   '${AppConstants.booked}: ${AppUtils.formatEpochToIST(booking['booking_time_epoch'] ?? 0)}'),
               const SizedBox(height: 12),
               if (booking['status'] == AppConstants.bookingStatusActive) ...[
@@ -241,7 +245,10 @@ class _HomePageState extends State<HomePage> {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.blue[600]!, Colors.blue[800]!],
+          colors: [
+            Color.fromARGB(245, 247, 136, 38)!,
+            Color.fromARGB(245, 247, 136, 38)!
+          ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -269,7 +276,7 @@ class _HomePageState extends State<HomePage> {
             AppConstants.bookTablesOrderFood,
             style: TextStyle(
               fontSize: 14,
-              color: Colors.blue[100],
+              color: Color.fromARGB(255, 239, 240, 241),
             ),
           ),
         ],

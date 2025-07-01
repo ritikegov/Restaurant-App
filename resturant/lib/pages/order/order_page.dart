@@ -79,9 +79,16 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.restaurant_menu),
+                  const Icon(
+                    Icons.restaurant_menu,
+                    color: Color.fromARGB(255, 254, 254, 252),
+                  ),
                   const SizedBox(width: 8),
-                  Text(AppConstants.menu),
+                  Text(
+                    AppConstants.menu,
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.w700),
+                  ),
                 ],
               ),
             ),
@@ -89,9 +96,14 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.shopping_cart),
+                  const Icon(
+                    Icons.shopping_cart,
+                    color: Color.fromARGB(255, 254, 254, 252),
+                  ),
                   const SizedBox(width: 8),
-                  Text(AppConstants.cart),
+                  Text(AppConstants.cart,
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w700)),
                   BlocBuilder<OrderBloc, OrderState>(
                     builder: (context, state) {
                       if (state is OrderCartLoaded && state.totalItems > 0) {
@@ -200,9 +212,9 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                   });
                   context.read<MenuBloc>().add(MenuFilterByCategory());
                 },
-                backgroundColor: Colors.grey[200],
-                selectedColor: Colors.blue[100],
-                checkmarkColor: Colors.blue,
+                backgroundColor: Color.fromARGB(245, 254, 178, 112),
+                selectedColor: Color.fromARGB(245, 247, 136, 38),
+                checkmarkColor: Color(0xFF001F54),
               ),
             );
           }
@@ -223,9 +235,9 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                     .read<MenuBloc>()
                     .add(MenuFilterByCategory(category: category));
               },
-              backgroundColor: Colors.grey[200],
-              selectedColor: Colors.blue[100],
-              checkmarkColor: Colors.blue,
+              backgroundColor: Color.fromARGB(245, 254, 178, 112),
+              selectedColor: Color.fromARGB(245, 247, 136, 38),
+              checkmarkColor: Color(0xFF001F54),
             ),
           );
         },
@@ -263,11 +275,11 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                   decoration: BoxDecoration(
                     color: Colors.blue[50],
                     borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.blue[200]!),
+                    border: Border.all(color: Color(0xFF001F54)!),
                   ),
                   child: Icon(
                     _getCategoryIcon(item.category),
-                    color: Colors.blue,
+                    color: Color(0xFF001F54),
                     size: 32,
                   ),
                 ),
@@ -361,7 +373,7 @@ class _OrderPageState extends State<OrderPage> with TickerProviderStateMixin {
                         icon: const Icon(Icons.add, size: 16),
                         label: Text(AppConstants.add),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green,
+                          backgroundColor: Color.fromARGB(245, 247, 136, 38),
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 8),

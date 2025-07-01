@@ -78,14 +78,14 @@ class _BookingPageState extends State<BookingPage> {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.info_outline, color: Colors.blue[700]),
+                        Icon(Icons.info_outline, color: Color(0xFF001F54)),
                         const SizedBox(width: 8),
                         Text(
                           AppConstants.bookingTableInfo,
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Colors.blue[700],
+                            color: Color(0xFF001F54),
                           ),
                         ),
                       ],
@@ -133,7 +133,7 @@ class _BookingPageState extends State<BookingPage> {
                           : null,
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: Colors.green,
+                        backgroundColor: Color.fromARGB(245, 247, 136, 38),
                         foregroundColor: Colors.white,
                       ),
                       child: isLoading
