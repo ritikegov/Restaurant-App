@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:restaurant_app/core/constants.dart';
 import '../models/menu_item_model.dart';
 import '../repositories/menu_repository.dart';
 
@@ -61,7 +62,8 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
         categories: categories,
       ));
     } catch (e) {
-      emit(MenuError(message: 'Failed to load menu: ${e.toString()}'));
+      emit(MenuError(
+          message: '${AppConstants.failedMenuLoadMesage} ${e.toString()}'));
     }
   }
 
@@ -76,7 +78,8 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
         categories: categories,
       ));
     } catch (e) {
-      emit(MenuError(message: 'Failed to refresh menu: ${e.toString()}'));
+      emit(MenuError(
+          message: '${AppConstants.failedRefreshMenu} ${e.toString()}'));
     }
   }
 
@@ -100,7 +103,8 @@ class MenuBloc extends Bloc<MenuEvent, MenuState> {
         selectedCategory: event.category,
       ));
     } catch (e) {
-      emit(MenuError(message: 'Failed to filter menu: ${e.toString()}'));
+      emit(MenuError(
+          message: '${AppConstants.failedToFilterMenu} ${e.toString()}'));
     }
   }
 

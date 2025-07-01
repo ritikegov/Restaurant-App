@@ -37,8 +37,11 @@ class AppConstants {
   static const String loginPassword = 'Password';
   static const String userNotLogin = 'User not logged in';
   static const String login = 'Login';
+  static const String loginFailed = 'Login failed:';
+  static const String logoutFailed = 'Logout failed:';
   static const String home = 'Home';
   static const String signUp = 'Sign Up';
+  static const String signUpFailed = 'Signup failed:';
   static const String refresh = 'Refresh';
   static const String welcome = 'Welcome';
   static const String retry = 'Retry';
@@ -49,6 +52,10 @@ class AppConstants {
   static const String alreadyAccountDescription =
       'Already have an account? Login';
   static const String passwordNotMatch = 'Passwords do not match';
+  static const String checkinSuccessMessage = 'Checked in successfully!';
+  static const String errorCheckinMessage = 'Failed to check in';
+  static const String checkoutSuccessMessage = 'Checked out successfully!';
+  static const String errorCheckoutMessage = 'Failed to checkout';
 
   static const String appName = 'Mezbaan';
 
@@ -56,6 +63,7 @@ class AppConstants {
   static const String errorInvalidCredentials = 'Invalid username or password';
   static const String errorUsernameRequired = 'Username is required';
   static const String errorPasswordRequired = 'Password is required';
+  static const String errorCreateUserFailed = 'Failed to create user';
   static const String errorUsernameLength = 'Username must be 3-20 characters';
   static const String errorPasswordLength =
       'Password must be at least 6 characters';
@@ -109,11 +117,14 @@ class AppConstants {
   static const String confirmBooking = 'Confirm Booking';
   static const String bookingDescription = 'confirm you booking ';
   static const String bookingNow = 'Book Now';
+  static const String bookingModifiedMessage = 'Booking modified successfully!';
+  static const String errorBookingModified = 'Failed to modify booking';
 
   static const String seat = 'seats';
   static const String noTableAvailable = 'No Tables Available';
   static const String noTableAvailableDescription =
       'All tables are currently full. Please try again later.';
+  static const String tableSuccessMessage = 'Table booked successfully!';
 
   static const String orderStatusPending = 'PENDING';
   static const String orderStatusPreparing = 'PREPARING';
@@ -145,22 +156,29 @@ class AppConstants {
   static const String manageYourAccount = 'Manage your account';
   static const String bookTablesOrderFood =
       'Book tables, order food, and enjoy your dining experience';
+
   static const String errorCheckingIn = 'Error checking in:';
   static const String errorCheckingOut = 'Error checking out:';
+  static const String checkinFirstMessage =
+      'You must check-in to place an order';
+  static const String errorCreateBooking = 'Failed to create booking';
   static const String errorCancellingBooking = 'Error cancelling booking:';
+  static const String errorCancelOrder = 'Failed to cancel order';
   static const String logoutError = 'Logout error:';
   static const String refreshError = 'Refresh error:';
   static const String unknown = 'Unknown';
-  static const String confirmCheckout =
-      'Are you sure you want to checkout? You will be able to book again immediately.';
+  static const String confirmCheckout = 'Do you want to checkout';
   static const String yesCheckout = 'Yes, Checkout';
   static const String no = 'No';
   static const String cancelBooking = 'Cancel Booking';
-  static const String confirmCancelBooking =
-      'Are you sure you want to cancel your booking?';
+  static const String confirmCancelBooking = 'Do you want to cancel booking';
+  static const String bookingCancelMessage = 'Booking cancelled successfully!';
+  static const String errorBookingCancel = 'Failed to cancel booking';
   static const String yes = 'Yes';
   static const String confirmLogout = 'Do you want to logout';
   static const String errorDisplayingBooking = 'Error displaying booking:';
+  static const String failedToSaveSession = 'Failed to save user session:';
+  static const String failedToClearSession = 'Failed to clear user session:';
 
   static const String loadingMenu = 'Loading menu...';
   static const String noMenuItems = 'No Menu Items';
@@ -184,17 +202,25 @@ class AppConstants {
   static const String orderNow = 'Order Now';
   static const String errorLoadingOrdersTitle = 'Error Loading Orders';
   static const String errorDisplayingOrder = 'Error displaying order:';
-  static const String confirmCancelOrder =
-      'Are you sure you want to cancel order #';
+  static const String confirmCancelOrder = 'Do you want to  cancel order #';
   static const String amount = 'Amount:';
   static const String cancelOrderNote =
       'Note: Only pending orders can be cancelled.';
   static const String yesCancelOrder = 'Yes, Cancel';
   static const String cancelError = 'Cancel error:';
   static const String orderDetailsTitle = 'Details';
+  static const String orderSuccessMessage = 'Order placed successfully!';
+  static const String orderFailedMessage = 'Failed to place order';
+  static const String failedToLoadOrderHistory =
+      'Failed to load order history:';
+  static const String failedtoLoadCurrentOrder =
+      'Failed to load current order:';
+  static const String orderCancelSuccessMessage =
+      'Order cancelled successfully';
   static const String orderTime = 'Order Time';
   static const String orderItems = 'Order Items:';
   static const String cancelOrder = 'cancelError';
+  static const String orderStatusUpdate = 'Order status updated';
   static const String quantity = 'Qty:';
   static const String noItemsFound = 'No items found';
   static const String close = 'Close';
@@ -236,6 +262,23 @@ class AppConstants {
   static const String signOutOfYourAccount = 'Sign out of your account';
   static const String errorLoadingUserInfo = 'Error loading user info:';
   static const String today = 'Today';
+  static const String failedUserLoad = 'Failed to load user booking:';
+  static const String failedUserHistoryLoad = 'Failed to load booking history:';
+  static const String failedMenuLoadMesage = 'Failed to load menu:';
+  static const String failedRefreshMenu = 'Failed to refresh menu:';
+  static const String failedToFilterMenu = 'Failed to filter menu:';
+  static const String failedToLoadTable = 'Failed to load tables:';
+  static const String failedToRefreshTable = 'Failed to refresh tables:';
+  static const String failedToUpdateTable =
+      'Failed to update table availability:';
+  static const String failedToLoadCart = 'Failed to load cart:';
+  static const String failedToAdd = 'Failed to add item:';
+  static const String filedToRemoveItems = 'Failed to remove item:';
+  static const String failedToUpdateItems = 'Failed to update quantity:';
+  static const String failedToClearCart = 'Failed to clear cart:';
+  static const String failedToUpdateOrderStatus =
+      'Failed to update order status';
+  static const String cartEmpty = 'Cart is empty';
 
   static const List<String> tableNames = [
     'Table 1',
