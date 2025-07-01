@@ -76,7 +76,6 @@ class _SignupPageState extends State<SignupPage> {
                     decoration: const InputDecoration(
                       labelText: AppConstants.loginUsername,
                       prefixIcon: Icon(Icons.person),
-                      helperText: AppConstants.errorUsernameLength,
                     ),
                     validator: AppUtils.validateUsername,
                     textInputAction: TextInputAction.next,
@@ -87,7 +86,6 @@ class _SignupPageState extends State<SignupPage> {
                     decoration: InputDecoration(
                       labelText: AppConstants.loginPassword,
                       prefixIcon: const Icon(Icons.lock),
-                      helperText: AppConstants.errorPasswordLength,
                       suffixIcon: IconButton(
                         icon: Icon(
                           _isPasswordVisible

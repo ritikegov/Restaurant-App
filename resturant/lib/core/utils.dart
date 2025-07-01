@@ -24,27 +24,6 @@ class AppUtils {
     }
   }
 
-  static int convertRupeesToPaise(double rupees) {
-    try {
-      return (rupees * 100).round();
-    } catch (e) {
-      return 0;
-    }
-  }
-
-  static bool canBookTable(int? lastCompletedBookingEpoch) {
-    if (lastCompletedBookingEpoch == null) return true;
-
-    try {
-      final now = getCurrentEpochTime();
-      final difference = now - lastCompletedBookingEpoch;
-      final hoursInMs = AppConstants.bookingDurationHours * 60 * 60 * 1000;
-      return difference >= hoursInMs;
-    } catch (e) {
-      return true;
-    }
-  }
-
   static bool hasBookingExpired(int bookingEpoch) {
     try {
       final now = getCurrentEpochTime();
@@ -113,67 +92,6 @@ class AppUtils {
       return password.split('').map((char) => char.codeUnitAt(0)).join('');
     } catch (e) {
       return password;
-    }
-  }
-
-  static double getHoursDifference(int fromEpoch, int toEpoch) {
-    try {
-      final difference = toEpoch - fromEpoch;
-      return difference / (1000 * 60 * 60);
-    } catch (e) {
-      return 0.0;
-    }
-  }
-
-  static String getBookingTimeText(int epochTime) {
-    try {
-      final dateTime = DateTime.fromMillisecondsSinceEpoch(epochTime);
-      final now = DateTime.now();
-
-      if (dateTime.day == now.day &&
-          dateTime.month == now.month &&
-          dateTime.year == now.year) {
-        return 'Today, ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
-      } else {
-        return formatEpochToIST(epochTime);
-      }
-    } catch (e) {
-      return 'Invalid Time';
-    }
-  }
-
-  static String generateOrderId() {
-    try {
-      return 'ORD${getCurrentEpochTime()}';
-    } catch (e) {
-      return 'ORD${DateTime.now().millisecondsSinceEpoch}';
-    }
-  }
-
-  static bool isNullOrEmpty(String? value) {
-    return value == null || value.trim().isEmpty;
-  }
-
-  static int safeParseInt(dynamic value, {int defaultValue = 0}) {
-    try {
-      if (value == null) return defaultValue;
-      if (value is int) return value;
-      if (value is String) return int.parse(value);
-      return defaultValue;
-    } catch (e) {
-      return defaultValue;
-    }
-  }
-
-  static double safeParseDouble(dynamic value, {double defaultValue = 0.0}) {
-    try {
-      if (value == null) return defaultValue;
-      if (value is double) return value;
-      if (value is int) return value.toDouble();
-      if (value is String) return double.parse(value);
-      return defaultValue;
-    } catch (e) {
-      return defaultValue;
     }
   }
 }

@@ -57,8 +57,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-            '${AppConstants.welcome} ${_username ?? AppConstants.user}${AppConstants.exclamation}'),
+        title:
+            Text('${AppConstants.welcome} ${_username ?? AppConstants.user}'),
         automaticallyImplyLeading: false,
         actions: [
           IconButton(
