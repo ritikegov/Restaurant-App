@@ -223,6 +223,7 @@ class AppConstants {
   static const String orderTime = 'Order Time';
   static const String orderItems = 'Order Items:';
   static const String cancelOrder = 'cancelError';
+  static const String orderStatusUpdate = 'Order status updated';
   static const String quantity = 'Qty:';
   static const String noItemsFound = 'No items found';
   static const String close = 'Close';
@@ -278,6 +279,8 @@ class AppConstants {
   static const String filedToRemoveItems = 'Failed to remove item:';
   static const String failedToUpdateItems = 'Failed to update quantity:';
   static const String failedToClearCart = 'Failed to clear cart:';
+  static const String failedToUpdateOrderStatus =
+      'Failed to update order status';
   static const String cartEmpty = 'Cart is empty';
 
   static const List<String> tableNames = [
