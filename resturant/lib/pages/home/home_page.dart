@@ -61,10 +61,21 @@ class _HomePageState extends State<HomePage> {
             Text('${AppConstants.welcome} ${_username ?? AppConstants.user}'),
         automaticallyImplyLeading: false,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: _handleLogout,
-            tooltip: AppConstants.logout,
+          Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: ElevatedButton.icon(
+                onPressed: _handleLogout,
+                label: Text(
+                  AppConstants.logout,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 244, 78, 66),
+                  foregroundColor: Colors.white,
+                )),
           ),
         ],
       ),
