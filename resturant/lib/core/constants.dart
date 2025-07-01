@@ -167,13 +167,11 @@ class AppConstants {
   static const String logoutError = 'Logout error:';
   static const String refreshError = 'Refresh error:';
   static const String unknown = 'Unknown';
-  static const String confirmCheckout =
-      'Are you sure you want to checkout? You will be able to book again immediately.';
+  static const String confirmCheckout = 'Do you want to checkout';
   static const String yesCheckout = 'Yes, Checkout';
   static const String no = 'No';
   static const String cancelBooking = 'Cancel Booking';
-  static const String confirmCancelBooking =
-      'Are you sure you want to cancel your booking?';
+  static const String confirmCancelBooking = 'Do you want to cancel booking';
   static const String bookingCancelMessage = 'Booking cancelled successfully!';
   static const String errorBookingCancel = 'Failed to cancel booking';
   static const String yes = 'Yes';
@@ -204,8 +202,7 @@ class AppConstants {
   static const String orderNow = 'Order Now';
   static const String errorLoadingOrdersTitle = 'Error Loading Orders';
   static const String errorDisplayingOrder = 'Error displaying order:';
-  static const String confirmCancelOrder =
-      'Are you sure you want to cancel order #';
+  static const String confirmCancelOrder = 'Do you want to  cancel order #';
   static const String amount = 'Amount:';
   static const String cancelOrderNote =
       'Note: Only pending orders can be cancelled.';
