@@ -11,7 +11,7 @@ Restaurants need a simple system where customers can:
 
 ## Approach and Design Choices
 
-figma : `https://www.figma.com/design/UfhG7sRAi4TzWoCMdjYnik/Untitled?node-id=0-1&t=6tNgh8JU7UKaOzEE-1`
+figma : `https://www.figma.com/design/ulCcWjJaWfaR7chsL9bm0e/Untitled?node-id=0-1&t=Jlm6fxEW2u8C2Ime-1`
 
 ### Architecture
 
